@@ -1,0 +1,33 @@
+.dashboardPage {
+  flex: 1;
+  padding: 20px;
+  background-color: #f8f9fa;
+  min-height: calc(100vh - 50px);
+}
+.dashboardTitle {
+  font-size: 32px;
+  font-weight: 700;
+  color: #333;
+  margin-bottom: 30px;
+}
+.kpiCardsContainer {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); /* Responsive grid */
+  gap: 20px;
+  margin-bottom: 30px;
+}
+.dashboardSection {
+  background-color: #ffffff;
+  border-radius: 8px;
+  padding: 20px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+  margin-bottom: 20px;
+}
+.dashboardSection h2 {
+  font-size: 24px;
+  font-weight: 600;
+  color: #333;
+  margin-bottom: 20px;
+  border-bottom: 1px solid #eee;
+  padding-bottom: 10px;
+}

@@ -1,0 +1,166 @@
+/* whistleapp/src/app/admin/referees/edit/editReferee.module.css */
+.editRefereeContainer {
+  flex: 1;
+  padding: 30px;
+  background-color: #f8f9fa;
+  min-height: calc(100vh - 50px);
+  max-width: 900px; /* Slightly wider for detailed form */
+  margin: 0 auto;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+  border-radius: 10px;
+  margin-top: 30px;
+  margin-bottom: 30px;
+}
+
+.editRefereeTitle {
+  font-size: 30px;
+  font-weight: 700;
+  color: #2c3e50;
+  margin-bottom: 30px;
+  text-align: center;
+  border-bottom: 1px solid #eee;
+  padding-bottom: 15px;
+}
+
+.loadingMessage,
+.errorMessage {
+  text-align: center;
+  font-size: 18px;
+  padding: 20px;
+  border-radius: 8px;
+  margin-top: 50px;
+}
+
+.loadingMessage {
+  color: #2c3e50;
+  background-color: #e9ecef;
+}
+
+.errorMessage {
+  color: #e74c3c;
+  background-color: #fde8e8;
+  border: 1px solid #e74c3c;
+}
+
+.editRefereeForm {
+  display: grid;
+  grid-template-columns: 1fr 1fr; /* Two columns for form fields */
+  gap: 25px;
+}
+
+/* For full-width elements */
+.editRefereeForm > .formGroup:nth-child(-n+3), /* Image, name, email span full width */
+.editRefereeForm > .buttonGroup,
+.editRefereeForm > .readOnlyGroup,
+.imageUploadGroup {
+  grid-column: 1 / -1; 
+}
+
+.formGroup {
+  display: flex;
+  flex-direction: column;
+}
+
+.formLabel {
+  margin-bottom: 8px;
+  font-weight: 600;
+  color: #333;
+  font-size: 15px;
+}
+
+.formInput {
+  padding: 12px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  font-size: 16px;
+  width: 100%;
+  box-sizing: border-box;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.formInput:focus {
+  border-color: #2c3e50;
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(44, 62, 80, 0.2);
+}
+
+.formCheckbox {
+  margin-right: 10px;
+  transform: scale(1.2); /* Make checkbox slightly larger */
+}
+
+.checkboxLabel {
+  font-size: 16px;
+  color: #555;
+  vertical-align: middle;
+}
+
+.imageUploadGroup {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.refereeImagePreview {
+    width: 150px;
+    height: 150px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 3px solid #2c3e50;
+    margin-bottom: 15px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+.readOnlyGroup {
+    background-color: #e9ecef;
+    padding: 15px;
+    border-radius: 8px;
+    margin-top: 20px;
+    grid-column: 1 / -1;
+    text-align: left;
+}
+
+.readOnlyGroup p {
+    margin: 5px 0;
+    color: #555;
+    font-size: 15px;
+}
+
+.readOnlyGroup strong {
+    color: #2c3e50;
+}
+
+.buttonGroup {
+  display: flex;
+  gap: 15px;
+  margin-top: 30px;
+  justify-content: flex-end;
+}
+
+.buttonGroup .MuiButton-root {
+  padding: 10px 20px;
+  font-size: 16px;
+  font-weight: 600;
+  border-radius: 8px;
+}
+
+.buttonGroup .MuiButton-containedPrimary {
+  background-color: #2c3e50 !important;
+  color: #ffffff !important;
+}
+
+.buttonGroup .MuiButton-containedPrimary:hover {
+  background-color: #34495e !important;
+}
+
+.buttonGroup .MuiButton-outlinedSecondary {
+  border-color: #2c3e50 !important;
+  color: #2c3e50 !important;
+}
+
+.buttonGroup .MuiButton-outlinedSecondary:hover {
+  background-color: rgba(44, 62, 80, 0.05) !important;
+}
+
+

@@ -1,0 +1,109 @@
+.testResultPage {
+  flex: 1;
+  padding: 20px;
+  background-color: #f0f2f5;
+  min-height: calc(100vh - 50px);
+}
+
+.testResultTitle {
+  font-size: 28px;
+  font-weight: 600;
+  color: #333;
+  margin-bottom: 20px;
+}
+
+/* =========================
+   Top Controls
+========================= */
+.topControls {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 30px;
+  gap: 20px;
+}
+
+/* =========================
+   Table
+========================= */
+.testResultTable {
+  width: 100%;
+  border-collapse: collapse;
+  background-color: #ffffff;
+  border-radius: 10px;
+  overflow: hidden;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+}
+
+.testResultTable th,
+.testResultTable td {
+  padding: 14px 16px;
+  text-align: center;
+}
+
+.testResultTable thead {
+  background-color: #2c3e50;
+  color: #ffffff;
+}
+
+.testResultTable tbody tr {
+  border-bottom: 1px solid #eee;
+}
+
+.testResultTable tbody tr:hover {
+  background-color: #f9f9f9;
+}
+
+/* =========================
+   Buttons
+========================= */
+.buttonGroup {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+}
+
+.saveButton {
+  background-color: #2c3e50;
+  color: #ffffff;
+  border: none;
+  padding: 8px 14px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 14px;
+  transition: background-color 0.2s ease;
+}
+
+.saveButton:hover {
+  background-color: #34495e;
+}
+
+.failButton {
+  background-color: #e74c3c;
+  color: #ffffff;
+  border: none;
+  padding: 8px 14px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 14px;
+  transition: background-color 0.2s ease;
+}
+
+.failButton:hover {
+  background-color: #c0392b;
+}
+
+/* =========================
+   Messages
+========================= */
+.noResultsFound {
+  text-align: center;
+  font-size: 18px;
+  color: #777;
+  margin-top: 50px;
+}
+
+.errorMessage {
+  color: red;
+  font-size: 16px;
+}

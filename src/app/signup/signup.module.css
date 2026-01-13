@@ -1,0 +1,95 @@
+/* whistleapp/src/app/signup/signup.module.css */
+.signupContainer {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  background-color: #f0f2f5; 
+  font-family: Arial, sans-serif;
+}
+
+.signupBox {
+  background-color: #ffffff;
+  padding: 40px;
+  border-radius: 10px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+  width: 100%;
+  max-width: 450px; /* Slightly wider for more fields */
+  text-align: center;
+}
+
+.signupTitle {
+  font-size: 24px;
+  color: #333;
+  margin-bottom: 30px;
+  font-weight: 600;
+}
+
+.errorMessage {
+  color: #e74c3c;
+  margin-bottom: 20px;
+  font-size: 14px;
+}
+
+.signupForm {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.formGroup {
+  text-align: left;
+}
+
+.formLabel {
+  display: block;
+  margin-bottom: 8px;
+  color: #555;
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.formInput {
+  width: 100%;
+  padding: 12px;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  font-size: 16px;
+  box-sizing: border-box; 
+}
+
+.formInput:focus {
+  border-color: #2c3e50;
+  outline: none;
+  box-shadow: 0 0 0 2px rgba(44, 62, 80, 0.2);
+}
+
+.signupButton {
+  background-color: #2c3e50 !important; 
+  color: #ffffff !important;
+  padding: 12px 20px !important;
+  border: none;
+  border-radius: 5px !important;
+  font-size: 16px !important;
+  cursor: pointer;
+  transition: background-color 0.3s ease !important;
+  font-weight: 600 !important;
+  margin-top: 10px;
+}
+
+.signupButton:hover {
+  background-color: #34495e !important;
+}
+
+.loginLink {
+  display: block;
+  margin-top: 20px;
+  color: #2c3e50;
+  text-decoration: none;
+  font-size: 14px;
+}
+
+.loginLink:hover {
+  text-decoration: underline;
+}
+

@@ -1,0 +1,77 @@
+/* src/components/TopBar/TopBar.module.css */
+.topBar {
+  width: 100%;
+  height: 50px;
+  background-color: #34495e; /* Matching the sidebar hover/active background */
+  position: sticky;
+  top: 0;
+  z-index: 999; /* Ensure top bar is always on top */
+  color: #ecf0f1; /* Matching sidebar text color */
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); /* Subtle shadow */
+}
+
+.topBarWrapper {
+  height: 100%;
+  padding: 0 20px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.topLeft {
+  display: flex;
+  align-items: center;
+}
+
+.logo {
+  font-weight: bold;
+  font-size: 24px;
+  color: #ecf0f1; /* Matching sidebar text color */
+  cursor: pointer;
+  text-decoration: none;
+  transition: color 0.2s ease-in-out;
+}
+
+.logo:hover {
+  color: #ffffff; /* Slightly brighter on hover */
+}
+
+.topRight {
+  display: flex;
+  align-items: center;
+}
+
+.topBarIconContainer {
+  position: relative;
+  cursor: pointer;
+  margin-left: 20px;
+  transition: color 0.2s ease-in-out;
+}
+
+.topBarIconContainer:hover {
+  color: #ffffff; /* White on hover */
+}
+
+.topIconBadge {
+  width: 15px;
+  height: 15px;
+  background-color: #e74c3c; /* Red badge for notifications */
+  border-radius: 50%;
+  color: white;
+  position: absolute;
+  top: -5px;
+  right: -5px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 10px;
+}
+
+.topAvatar {
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  object-fit: cover;
+  cursor: pointer;
+  margin-left: 20px;
+}

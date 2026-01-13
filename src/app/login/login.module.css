@@ -1,0 +1,96 @@
+/* whistleapp/src/app/login/login.module.css */
+.loginContainer {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  background-color: #f0f2f5; /* Light background */
+  font-family: Arial, sans-serif;
+}
+
+.loginBox {
+  background-color: #ffffff;
+  padding: 40px;
+  border-radius: 10px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+  width: 100%;
+  max-width: 400px;
+  text-align: center;
+}
+
+.loginTitle {
+  font-size: 24px;
+  color: #333;
+  margin-bottom: 30px;
+  font-weight: 600;
+}
+
+.errorMessage {
+  color: #e74c3c; /* Red for errors */
+  margin-bottom: 20px;
+  font-size: 14px;
+}
+
+.loginForm {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.formGroup {
+  text-align: left;
+}
+
+.formLabel {
+  display: block;
+  margin-bottom: 8px;
+  color: #555;
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.formInput {
+  width: 100%;
+  padding: 12px;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  font-size: 16px;
+  box-sizing: border-box; /* Include padding in width */
+}
+
+.formInput:focus {
+  border-color: #2c3e50; /* Highlight on focus */
+  outline: none;
+  box-shadow: 0 0 0 2px rgba(44, 62, 80, 0.2);
+}
+
+.loginButton {
+  background-color: #2c3e50; /* Dark blue button */
+  color: #ffffff;
+  padding: 12px 20px;
+  border: none;
+  border-radius: 5px;
+  font-size: 16px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  font-weight: 600;
+}
+
+.loginButton:hover {
+  background-color: #34495e; /* Slightly lighter on hover */
+}
+
+/* Optional: .forgotPasswordLink {
+  display: block;
+  margin-top: 15px;
+  color: #2c3e50;
+  text-decoration: none;
+  font-size: 14px;
+}
+
+.forgotPasswordLink:hover {
+  text-decoration: underline;
+} */
+
+
+

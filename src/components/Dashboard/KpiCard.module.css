@@ -1,0 +1,56 @@
+/* whistleapp/src/components/Dashboard/KpiCard.module.css */
+.kpiCard {
+  background-color: #ffffff;
+  border-radius: 8px;
+  padding: 20px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  min-width: 220px;
+  flex: 1; /* Allow cards to grow and shrink */
+}
+
+.cardHeader {
+  display: flex;
+  align-items: center;
+  margin-bottom: 15px;
+}
+
+.cardIcon {
+  font-size: 36px !important;
+  color: #2c3e50; /* Primary color */
+  margin-right: 15px;
+}
+
+.cardTitle {
+  font-size: 16px;
+  color: #555;
+  margin: 0;
+  font-weight: 500;
+}
+
+.cardValue {
+  font-size: 32px;
+  font-weight: bold;
+  color: #333;
+  margin: 0 0 10px 0;
+}
+
+.cardChange {
+  font-size: 14px;
+  display: flex;
+  align-items: center;
+}
+
+.increase {
+  color: #28a745; /* Green for increase */
+}
+
+.decrease {
+  color: #dc3545; /* Red for decrease */
+}
+
+.neutral {
+  color: #6c757d; /* Gray for neutral */
+}

@@ -1,0 +1,89 @@
+.courtsPage {
+  flex: 1;
+  padding: 30px;
+  background-color: #f8f9fa;
+  min-height: calc(100vh - 50px);
+}
+
+.courtsTitle {
+  font-size: 26px;
+  font-weight: 700;
+  color: #2c3e50;
+  margin-bottom: 25px;
+}
+
+.addCourtForm {
+  background: #fff;
+  padding: 25px;
+  border-radius: 12px;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+  max-width: 600px;
+}
+
+.formGroup {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 20px;
+}
+
+.formLabel {
+  font-size: 15px;
+  font-weight: 600;
+  color: #34495e;
+  margin-bottom: 8px;
+}
+
+.formInput {
+  padding: 10px 12px;
+  border: 1px solid #dcdcdc;
+  border-radius: 8px;
+  font-size: 15px;
+  transition: border-color 0.2s;
+}
+
+.formInput:focus {
+  border-color: #3498db;
+  outline: none;
+}
+
+.buttonGroup {
+  display: flex;
+  gap: 15px;
+  margin-top: 20px;
+}
+
+.detailsButton {
+  background-color: #3498db;
+  color: white;
+  font-weight: 600;
+  padding: 10px 18px;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.detailsButton:hover {
+  background-color: #2980b9;
+}
+
+.deleteButton {
+  background-color: #e74c3c;
+  color: white;
+  font-weight: 600;
+  padding: 10px 18px;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.deleteButton:hover {
+  background-color: #c0392b;
+}
+
+.errorMessage {
+  color: #e74c3c;
+  font-size: 14px;
+  margin-bottom: 15px;
+}
