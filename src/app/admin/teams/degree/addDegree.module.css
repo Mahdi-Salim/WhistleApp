@@ -1,0 +1,70 @@
+.degreePage {
+  flex: 1;
+  padding: 20px;
+  background-color: #f0f2f5;
+  min-height: calc(100vh - 50px);
+}
+
+.degreeTitle {
+  font-size: 28px;
+  font-weight: 600;
+  color: #333;
+  margin-bottom: 20px;
+}
+
+.addDegreeContainer {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 20px;
+}
+
+.degreeInput {
+  flex-grow: 1;
+  padding: 10px 15px;
+  font-size: 16px;
+  border-radius: 8px;
+  border: 1px solid #ddd;
+  outline: none;
+}
+
+.degreeInput:focus {
+  border-color: #2c3e50;
+  box-shadow: 0 0 0 3px rgba(44, 62, 80, 0.2);
+}
+
+.addButton {
+  background-color: #2c3e50;
+  color: #fff;
+  border: none;
+  padding: 10px 20px;
+  font-size: 16px;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+.addButton:hover {
+  background-color: #34495e;
+}
+
+.degreesList {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+  gap: 15px;
+  margin-top: 20px;
+}
+
+.degreeCard {
+  background-color: #fff;
+  padding: 10px 15px;
+  border-radius: 10px;
+  text-align: center;
+  color: #2c3e50;
+  font-weight: 600;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+}
+
+.noDegrees {
+  text-align: center;
+  font-size: 16px;
+  color: #777;
+}

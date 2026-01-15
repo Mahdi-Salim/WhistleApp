@@ -1,0 +1,63 @@
+/* حاوية الصفحة */
+.container {
+  padding: 16px;
+}
+
+/* عنوان الصفحة */
+.pageTitle {
+  font-size: 22px;
+  font-weight: 700;
+  color: #2c3e50;
+  margin-bottom: 20px;
+  text-align: right;
+}
+
+/* بطاقة الملف الشخصي */
+.profileCard {
+  background-color: #ffffff;
+  border-radius: 10px;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+/* صف بيانات */
+.profileRow {
+  display: flex;
+  justify-content: space-between;
+  text-align: right;
+  font-size: 14px;
+  color: #333;
+}
+
+/* عنوان الحقل */
+.label {
+  font-weight: 600;
+  color: #2c3e50;
+}
+
+/* القيمة */
+.value {
+  font-weight: 400;
+  color: #555;
+}
+
+/* زر تعديل البيانات */
+.editButton {
+  margin-top: 16px;
+  padding: 10px 16px;
+  background-color: #2c3e50;
+  color: #ffffff;
+  border: none;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 600;
+  transition: background-color 0.2s ease;
+}
+
+.editButton:hover {
+  background-color: #34495e;
+  cursor: pointer;
+}

@@ -13,20 +13,24 @@ const transformAssessor = (data: unknown): User => {
     birthDate: d.birthDate ?? "",
     address: d.address ?? "",
     photo: d.photo ?? "",
-    RoleId: d.RoleId ?? 2, 
+    RoleId: d.RoleId ?? 2, // المقيم دائمًا RoleId = 2
     createdAt: d.createdAt,
     updatedAt: d.updatedAt,
   };
 };
+
 export const assessorService = {
   async getAll(): Promise<User[]> {
     const response = await api.get("/api/user/getAllRefereeAssessor");
     return response.data.data.map((item: unknown) => transformAssessor(item));
   },
+
   async getById(id: number): Promise<User> {
-    const response = await api.get(`/api/user/getUserById/${String(id)}`);
+    // ✅ المسار الصحيح حسب الراوت
+    const response = await api.get(`/api/user/getUser/${String(id)}`);
     return transformAssessor(response.data.data);
   },
+
   async create(data: Partial<User>): Promise<User> {
     if (
       !data.userName ||
@@ -38,17 +42,19 @@ export const assessorService = {
     ) {
       throw new Error("جميع الحقول مطلوبة");
     }
+
     const cleanPhoneNumber = data.phoneNumber.replace(/\D/g, "");
     if (cleanPhoneNumber.length < 10 || cleanPhoneNumber.length > 15) {
       throw new Error("رقم الهاتف يجب أن يكون بين 10-15 رقم");
     }
+
     const payload = {
       userName: data.userName.substring(0, 16),
       email: data.email.trim(),
       password: data.password,
       phoneNumber: cleanPhoneNumber,
-      RoleId: 2, 
-      birthDate: data.birthDate, 
+      RoleId: 2, // المقيم
+      birthDate: data.birthDate,
       address: data.address,
       photo: data.photo || "",
     };
@@ -65,6 +71,7 @@ export const assessorService = {
       throw error;
     }
   },
+
   async update(id: number, data: Partial<User>): Promise<User> {
     const payload = {
       userName: data.userName,
@@ -76,10 +83,13 @@ export const assessorService = {
       address: data.address,
       photo: data.photo,
     };
-    const res = await api.patch(`/api/user/updateUser/${String(id)}`, payload);
+    // ✅ المسار الصحيح حسب الراوت
+    const res = await api.patch(`/api/user/editUser/${String(id)}`, payload);
     return transformAssessor(res.data.data);
   },
+
   async delete(id: number): Promise<void> {
-    await api.delete(`/api/user/deleteOne/${String(id)}`);
+    // ✅ المسار الصحيح حسب الراوت
+    await api.delete(`/api/user/deleteUser/${String(id)}`);
   },
 };

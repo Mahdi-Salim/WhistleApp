@@ -1,122 +1,57 @@
-import { Team, Player, StaffMember } from "@/types/teams";
+import axios from "axios";
+import { Team } from "@/types/teams";
 
-let teams: Team[] = [
-  {
-    id: 1,
-    name: "نادي الوحدة",
-    city: "دمشق",
-    degree: "الدرجة الأولى",
-    logo: "/images/teams/alwahda.png",
-
-    staff: [
-      { id: 1, name: "محمد قويض", role: "HeadCoach" },
-      { id: 2, name: "حسام السيد", role: "AssistantCoach" },
-      { id: 3, name: "أحمد عباس", role: "GoalkeeperCoach" },
-      { id: 4, name: "محمود علي", role: "Physiotherapist" },
-      { id: 5, name: "علي حسين", role: "MediaOfficer" },
-      { id: 6, name: "سامر حسن", role: "TeamManager" },
-      { id: 7, name: "زياد يوسف", role: "equipmentManager" },
-    ],
-
-    players: [
-      {
-        id: 1,
-        name: "عبد الرحمن يوسف",
-        position: "حارس مرمى",
-        number: 1,
-        nationality: "سوري",
-        birthDate: "1998-05-12",
-      },
-      {
-        id: 2,
-        name: "فراس الخطيب",
-        position: "مهاجم",
-        number: 9,
-        nationality: "سوري",
-        birthDate: "1997-03-21",
-      },
-      {
-        id: 3,
-        name: "علاء الدالي",
-        position: "وسط",
-        number: 8,
-        nationality: "سوري",
-        birthDate: "1999-11-02",
-      },
-    ],
-  },
-
-  {
-    id: 2,
-    name: "نادي الاتحاد",
-    city: "حلب",
-    degree: "الدرجة الممتازة",
-    logo: "/images/teams/alittihad.png",
-
-    staff: [
-      { id: 8, name: "حسين عفش", role: "HeadCoach" },
-      { id: 9, name: "أيمن حكيم", role: "AssistantCoach" },
-      { id: 10, name: "مروان درويش", role: "TeamManager" },
-    ],
-
-    players: [
-      {
-        id: 4,
-        name: "مجد محمد",
-        position: "مدافع",
-        number: 4,
-        nationality: "سوري",
-        birthDate: "2000-01-15",
-      },
-      {
-        id: 5,
-        name: "أنس دهان",
-        position: "وسط",
-        number: 6,
-        nationality: "سوري",
-        birthDate: "1998-07-09",
-      },
-    ],
-  },
-];
-
-/* =========================
-   Service
-========================= */
+// استخدم 127.0.0.1 بدل localhost أحياناً يحل مشاكل الشبكة الداخلية
+const API_URL = "http://127.0.0.1:3000/api/team";
 
 export const teamService = {
-  // جلب جميع الفرق
   async getAll(): Promise<Team[]> {
-    return Promise.resolve(teams);
+    try {
+      const res = await axios.get(`${API_URL}/getAllTeams`);
+      // نتأكد دائماً من أن res.data.data موجودة
+      return Array.isArray(res.data?.data) ? res.data.data : [];
+    } catch (error: any) {
+      console.error("Failed to fetch teams:", error.message);
+      return []; // ترجع مصفوفة فارغة بدل توقف الفرونت
+    }
   },
 
-  // جلب فريق حسب ID
-  async getById(id: number): Promise<Team | null> {
-    const team = teams.find((t) => t.id === id);
-    return Promise.resolve(team ?? null);
+  async getByName(name: string): Promise<Team | null> {
+    try {
+      const res = await axios.get(`${API_URL}/getOneTeam/${name}`);
+      return res.data.data ?? null;
+    } catch (error: any) {
+      console.error(`Failed to fetch team ${name}:`, error.message);
+      return null;
+    }
   },
 
-  // إنشاء فريق جديد
   async create(team: Omit<Team, "id">): Promise<Team> {
-    const newTeam: Team = {
-      ...team,
-      id: Date.now(),
-    };
-    teams.push(newTeam);
-    return Promise.resolve(newTeam);
+    try {
+      const res = await axios.post(`${API_URL}/createTeam`, team);
+      return res.data.data;
+    } catch (error: any) {
+      console.error("Failed to create team:", error.message);
+      throw error; // لإظهار الرسالة في الفورم
+    }
   },
 
-  // تحديث بيانات فريق
-  async update(id: number, updatedTeam: Team): Promise<Team> {
-    teams = teams.map((team) =>
-      team.id === id ? updatedTeam : team
-    );
-    return Promise.resolve(updatedTeam);
+  async update(name: string, updatedTeam: Partial<Team>): Promise<Team> {
+    try {
+      const res = await axios.patch(`${API_URL}/updateTeam/${name}`, updatedTeam);
+      return res.data.data;
+    } catch (error: any) {
+      console.error(`Failed to update team ${name}:`, error.message);
+      throw error;
+    }
   },
 
-  // حذف فريق
-  async delete(id: number): Promise<void> {
-    teams = teams.filter((team) => team.id !== id);
-    return Promise.resolve();
+  async delete(name: string): Promise<void> {
+    try {
+      await axios.delete(`${API_URL}/deleteTeam/${name}`);
+    } catch (error: any) {
+      console.error(`Failed to delete team ${name}:`, error.message);
+      throw error;
+    }
   },
 };

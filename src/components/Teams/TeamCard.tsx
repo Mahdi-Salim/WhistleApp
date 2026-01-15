@@ -8,13 +8,13 @@ import { Team } from "@/types/teams";
 
 interface TeamCardProps {
   team: Team;
-  onDelete: (id: number) => void;
+  onDelete: (name: string) => void; // ✅ تعديل: الحذف بالاسم
 }
 
 const TeamCard: React.FC<TeamCardProps> = ({ team, onDelete }) => {
   const handleDelete = () => {
     if (confirm(`هل أنت متأكد من حذف الفريق "${team.name}"؟`)) {
-      onDelete(team.id);
+      onDelete(team.name); // ✅ تمرير الاسم بدل id
     }
   };
 
@@ -37,7 +37,8 @@ const TeamCard: React.FC<TeamCardProps> = ({ team, onDelete }) => {
       </p>
 
       <div className={styles.buttonRow}>
-        <Link href={`/admin/teams/edit/${team.id}`}>
+        {/* ✅ تعديل الرابط ليستخدم الاسم بدل id */}
+        <Link href={`/admin/teams/edit/${team.name}`}>
           <Button
             variant="contained"
             className={styles.detailsButton}

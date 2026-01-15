@@ -1,0 +1,99 @@
+.pageTitle {
+  font-size: 22px;
+  font-weight: 700;
+  color: #2c3e50;
+  margin-bottom: 20px;
+}
+
+/* بطاقة القسم */
+.sectionCard {
+  background-color: #ffffff;
+  border-radius: 10px;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+  padding: 16px;
+  margin-bottom: 20px;
+  overflow-x: auto; /* يسمح بالتمرير على الهواتف */
+}
+
+/* عنوان كل قسم */
+.sectionTitle {
+  font-size: 16px;
+  font-weight: 600;
+  color: #2c3e50;
+  margin-bottom: 12px;
+  text-align: right;
+  border-bottom: 1px solid #ddd;
+  padding-bottom: 6px;
+}
+
+/* جدول اللاعبين والكادر */
+.table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-bottom: 12px;
+}
+
+.table th, .table td {
+  border: 1px solid #ddd;
+  padding: 8px;
+  font-size: 14px;
+  text-align: center;
+}
+
+/* رؤوس الأعمدة */
+.table th {
+  background-color: #f0f2f5;
+  color: #2c3e50;
+  font-weight: 600;
+}
+
+/* إدخالات الحكم داخل الجدول */
+.table input {
+  width: 100%;
+  padding: 4px 6px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  text-align: center;
+  font-size: 14px;
+  box-sizing: border-box;
+}
+
+/* أعمدة ملونة */
+.table th.yellow, .table td.yellow {
+  background-color: #fff9c4; /* أصفر فاتح */
+}
+
+.table th.red, .table td.red {
+  background-color: #ffcdd2; /* أحمر فاتح */
+}
+
+/* textarea للملاحظات والتبديلات */
+.textAreaField {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  margin-bottom: 12px;
+  font-size: 14px;
+  min-height: 80px;
+  box-sizing: border-box;
+}
+
+/* زر إرسال التقرير */
+.submitButton {
+  width: 100%;
+  background-color: #2c3e50;
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  padding: 12px;
+  font-size: 16px;
+  font-weight: 600;
+  margin-top: 10px;
+  transition: background-color 0.2s ease;
+}
+
+.submitButton:hover {
+  background-color: #34495e;
+  cursor: pointer;
+}

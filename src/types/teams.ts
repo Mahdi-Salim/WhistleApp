@@ -1,29 +1,25 @@
 export interface Player {
-  id: number;
   name: string;
-  position: string;
-  number: number;
-  birthDate: string;
-  nationality?: string;
+  num: number;
+  sub?: number;
+  YCard?: number;
+  RCard?: number;
+  goal?: number;
+  onGoal?: number;
+  position: string; // مثال: "GK", "FW", "MF", "DF"
 }
-export interface StaffMember {
-  id: number;
-  name: string;
-  role:
-    | "HeadCoach"
-    | "AssistantCoach"
-    | "GoalkeeperCoach"
-    | "Physiotherapist"
-    | "MediaOfficer"
-    | "TeamManager"
-    | "equipmentManager";
-}
+
 export interface Team {
-  id: number;
-  name: string;
-  city: string;
-  logo?: string;
- degree: string;          // الدرجة (مثل الدرجة الأولى، الثانية، إلخ)
-  staff: StaffMember[];     // الطاقم الفني والإداري
-  players: Player[];        // قائمة اللاعبين (حتى 40)
+  id?: number;             // id تلقائي من Sequelize
+  TeamName: string;
+  TeamManager: string;
+  Coach: string;
+  AssistantCoach?: string;
+  KeeperCoach?: string;
+  PhysicalTherapist?: string;
+  MediaOfficial?: string;
+  EquipmentManager?: string;
+  Players: Player[];
+  TeamLogo?: string;
+  DegreeId: number;        // المفتاح الأجنبي للدرجة
 }

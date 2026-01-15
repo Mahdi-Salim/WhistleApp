@@ -1,0 +1,30 @@
+.pageTitle {
+  font-size: 22px;
+  font-weight: 700;
+  color: #2c3e50;
+  margin-bottom: 20px;
+  text-align: right;
+}
+
+/* شبكة أيام الشهر */
+.calendar {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr); /* 7 أيام في الأسبوع */
+  gap: 6px;
+}
+
+/* كل يوم */
+.dayCell {
+  padding: 12px 0;
+  border-radius: 6px;
+  text-align: center;
+  cursor: pointer;
+  font-weight: 600;
+  color: #333;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.dayCell:hover {
+  transform: scale(1.05);
+  box-shadow: 0 2px 6px rgba(0,0,0,0.15);
+}

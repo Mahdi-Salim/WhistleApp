@@ -13,7 +13,7 @@ import { teamService } from "@/services/teamservice";
 export default function EditTeamPage() {
   const params = useParams();
   const router = useRouter();
-  const teamId = Number(params.id);
+  const teamName = params.name as string; // ✅ استخدام الاسم بدل id
 
   const [team, setTeam] = useState<Team | null>(null);
   const [error, setError] = useState<string | null>(null);
@@ -22,11 +22,10 @@ export default function EditTeamPage() {
   useEffect(() => {
     const fetchTeam = async () => {
       try {
-        const data = await teamService.getById(teamId);
+        const data = await teamService.getByName(teamName); // ✅ جلب الفريق بالاسم
         if (!data) {
           setError("لم يتم العثور على الفريق");
         } else {
-          // تهيئة players كمصفوفة حتى لو كانت فارغة
           setTeam({ ...data, players: data.players || [] });
         }
       } catch (err) {
@@ -36,7 +35,7 @@ export default function EditTeamPage() {
     };
 
     fetchTeam();
-  }, [teamId]);
+  }, [teamName]);
 
   // تحديث بيانات الفريق الأساسية
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -88,9 +87,9 @@ export default function EditTeamPage() {
   };
 
   // حفظ التعديلات
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
     if (!team) return;
-    teamService.update(team.id, team);
+    await teamService.update(teamName, team); // ✅ التحديث بالاسم
     alert("تم تحديث بيانات الفريق بنجاح");
     router.push("/admin/teams");
   };

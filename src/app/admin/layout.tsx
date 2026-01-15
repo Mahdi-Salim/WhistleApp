@@ -7,6 +7,8 @@ import { AssessorProvider } from "@/context/AssessorContext";
 import { WATProvider } from "@/context/WATContext";
 import { CourtProvider } from "@/context/CourtContext";
 import { ResultsProvider } from "@/context/testresultContext";
+import { TeamProvider } from "@/context/TeamContext";
+import { DegreeProvider } from "@/context/degreeContext";
 
 function AdminLayout({ children }: { children: React.ReactNode }) {
   return (
@@ -15,6 +17,8 @@ function AdminLayout({ children }: { children: React.ReactNode }) {
         <WATProvider>
           <CourtProvider>
             <ResultsProvider>
+              <TeamProvider>
+                <DegreeProvider>
               <Topbar />
               <div className={styles.container}>
                 <Sidebar />
@@ -22,6 +26,8 @@ function AdminLayout({ children }: { children: React.ReactNode }) {
                   {children}
                 </main>
               </div>
+              </DegreeProvider>
+              </TeamProvider>
             </ResultsProvider>
           </CourtProvider>
         </WATProvider>
