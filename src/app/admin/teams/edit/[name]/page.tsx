@@ -9,14 +9,19 @@ import AddIcon from "@mui/icons-material/Add";
 import styles from "./editTeam.module.css";
 import { Team, Player } from "@/types/teams";
 import { teamService } from "@/services/teamservice";
+import { imageService } from "@/services/imageService";
+import { useDegreeContext } from "@/context/degreeContext";
 
 export default function EditTeamPage() {
   const params = useParams();
   const router = useRouter();
-  const teamName = params.name as string; // ✅ استخدام الاسم بدل id
+  const teamName = params.name as string; // ✅ TeamName in route
+
+  const { degrees } = useDegreeContext();
 
   const [team, setTeam] = useState<Team | null>(null);
   const [error, setError] = useState<string | null>(null);
+  const [uploadingImage, setUploadingImage] = useState(false);
 
   // جلب بيانات الفريق عند التحميل
   useEffect(() => {
@@ -26,7 +31,10 @@ export default function EditTeamPage() {
         if (!data) {
           setError("لم يتم العثور على الفريق");
         } else {
-          setTeam({ ...data, players: data.players || [] });
+          setTeam({
+            ...data,
+            Players: Array.isArray((data as any).Players) ? (data as any).Players : [],
+          });
         }
       } catch (err) {
         console.error(err);
@@ -37,26 +45,45 @@ export default function EditTeamPage() {
     fetchTeam();
   }, [teamName]);
 
-  // تحديث بيانات الفريق الأساسية
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (!team) return;
-    const { name, value } = e.target;
-    setTeam({ ...team, [name]: value });
+  // رفع الشعار
+  const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    setUploadingImage(true);
+    try {
+      const imageUrl = await imageService.upload(file);
+      setTeam((prev) => (prev ? { ...prev, TeamLogo: imageUrl } : prev));
+    } catch {
+      alert("فشل في رفع الشعار، يرجى المحاولة مرة أخرى.");
+    } finally {
+      setUploadingImage(false);
+    }
   };
 
-  // تحديث لاعب محدد
+  // تحديث بيانات الفريق الأساسية
+  const handleChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
+  ) => {
+    if (!team) return;
+    const { name, value } = e.target;
+
+    setTeam({
+      ...team,
+      [name]: name === "DegreeId" ? Number(value) : value,
+    } as Team);
+  };
+
+  // تحديث لاعب محدد (باستخدام index)
   const handlePlayerChange = (
-    playerId: number,
+    index: number,
     field: keyof Player,
     value: string | number
   ) => {
     if (!team) return;
-    setTeam({
-      ...team,
-      players: team.players.map((p) =>
-        p.id === playerId ? { ...p, [field]: value } : p
-      ),
-    });
+    const next = [...team.Players];
+    next[index] = { ...next[index], [field]: value };
+    setTeam({ ...team, Players: next });
   };
 
   // إضافة لاعب جديد
@@ -64,32 +91,28 @@ export default function EditTeamPage() {
     if (!team) return;
     setTeam({
       ...team,
-      players: [
-        ...team.players,
-        {
-          id: Date.now(),
-          name: "",
-          number: 0,
-          position: "",
-          birthDate: "",
-        },
-      ],
+      Players: [...team.Players, { name: "", num: 0, position: "" }],
     });
   };
 
   // حذف لاعب
-  const removePlayer = (id: number) => {
+  const removePlayer = (index: number) => {
     if (!team) return;
     setTeam({
       ...team,
-      players: team.players.filter((p) => p.id !== id),
+      Players: team.Players.filter((_, i) => i !== index),
     });
   };
 
   // حفظ التعديلات
   const handleSubmit = async () => {
     if (!team) return;
-    await teamService.update(teamName, team); // ✅ التحديث بالاسم
+
+    await teamService.update(teamName, {
+      ...team,
+      replacePlayers: true,
+    } as any);
+
     alert("تم تحديث بيانات الفريق بنجاح");
     router.push("/admin/teams");
   };
@@ -101,68 +124,135 @@ export default function EditTeamPage() {
     <div className={styles.editTeamContainer}>
       <h1 className={styles.editTeamTitle}>تعديل بيانات الفريق</h1>
 
+      {/* شعار الفريق */}
+      <div className={styles.formGroup}>
+        <label style={{ display: "block", marginBottom: "5px" }}>شعار الفريق</label>
+        <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
+          {team.TeamLogo && (
+            <img
+              src={team.TeamLogo}
+              alt="Team Logo"
+              style={{
+                width: 80,
+                height: 80,
+                objectFit: "contain",
+                borderRadius: "5px",
+                border: "1px solid #ddd",
+              }}
+            />
+          )}
+          <div>
+            <input
+              type="file"
+              accept="image/*"
+              onChange={handleImageUpload}
+              disabled={uploadingImage}
+            />
+            {uploadingImage && <p style={{ fontSize: "12px" }}>جاري الرفع...</p>}
+          </div>
+        </div>
+      </div>
+
       {/* بيانات الفريق الأساسية */}
       <div className={styles.formGroup}>
         <input
-          name="name"
-          value={team.name}
+          name="TeamName"
+          value={team.TeamName}
           onChange={handleChange}
           placeholder="اسم الفريق"
           className={styles.formInput}
         />
         <input
-          name="city"
-          value={team.city}
+          name="TeamManager"
+          value={team.TeamManager}
           onChange={handleChange}
-          placeholder="المدينة"
+          placeholder="مدير الفريق"
           className={styles.formInput}
         />
         <input
-          name="degree"
-          value={team.degree}
+          name="Coach"
+          value={team.Coach}
           onChange={handleChange}
-          placeholder="الدرجة"
+          placeholder="المدرب"
           className={styles.formInput}
         />
+        <input
+          name="AssistantCoach"
+          value={team.AssistantCoach || ""}
+          onChange={handleChange}
+          placeholder="مساعد المدرب"
+          className={styles.formInput}
+        />
+        <input
+          name="KeeperCoach"
+          value={team.KeeperCoach || ""}
+          onChange={handleChange}
+          placeholder="مدرب الحراس"
+          className={styles.formInput}
+        />
+        <input
+          name="PhysicalTherapist"
+          value={team.PhysicalTherapist || ""}
+          onChange={handleChange}
+          placeholder="المعالج الفيزيائي"
+          className={styles.formInput}
+        />
+        <input
+          name="MediaOfficial"
+          value={team.MediaOfficial || ""}
+          onChange={handleChange}
+          placeholder="المنسق الإعلامي"
+          className={styles.formInput}
+        />
+        <input
+          name="EquipmentManager"
+          value={team.EquipmentManager || ""}
+          onChange={handleChange}
+          placeholder="مسؤول التجهيزات"
+          className={styles.formInput}
+        />
+
+        <select
+          name="DegreeId"
+          className={styles.formInput}
+          value={team.DegreeId}
+          onChange={handleChange}
+        >
+          <option value={0}>اختر درجة الفريق</option>
+          {degrees.map((deg) => (
+            <option key={deg.id} value={deg.id}>
+              {deg.TypeOfDegree}
+            </option>
+          ))}
+        </select>
       </div>
 
       {/* قائمة اللاعبين */}
       <div className={styles.playersSection}>
         <h2>قائمة اللاعبين</h2>
 
-        {team.players.map((player) => (
-          <div key={player.id} className={styles.playerRow}>
+        {team.Players.map((player, index) => (
+          <div key={index} className={styles.playerRow}>
             <input
               placeholder="الاسم"
               value={player.name}
-              onChange={(e) =>
-                handlePlayerChange(player.id, "name", e.target.value)
-              }
+              onChange={(e) => handlePlayerChange(index, "name", e.target.value)}
             />
             <input
               type="number"
               placeholder="الرقم"
-              value={player.number}
-              onChange={(e) =>
-                handlePlayerChange(player.id, "number", Number(e.target.value))
-              }
+              value={player.num}
+              onChange={(e) => handlePlayerChange(index, "num", Number(e.target.value))}
             />
             <input
               placeholder="المركز"
               value={player.position}
               onChange={(e) =>
-                handlePlayerChange(player.id, "position", e.target.value)
-              }
-            />
-            <input
-              type="date"
-              value={player.birthDate}
-              onChange={(e) =>
-                handlePlayerChange(player.id, "birthDate", e.target.value)
+                handlePlayerChange(index, "position", e.target.value)
               }
             />
 
-            <Button color="error" onClick={() => removePlayer(player.id)}>
+            <Button color="error" onClick={() => removePlayer(index)}>
               حذف
             </Button>
           </div>

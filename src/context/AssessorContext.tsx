@@ -20,6 +20,9 @@ export const AssessorProvider: React.FC<{ children: React.ReactNode }> = ({ chil
     try {
       const data: User[] = await assessorService.getAll();
       setAssessors(data);
+    } catch (error) {
+      console.warn("Error fetching assessors in context:", error);
+      setAssessors([]);
     } finally {
       setLoading(false);
     }
@@ -30,15 +33,13 @@ export const AssessorProvider: React.FC<{ children: React.ReactNode }> = ({ chil
   };
 
   const updateAssessor = async (id: number, data: Partial<User>) => {
-    await assessorService.update(id, data); // ✅ id يبقى number
+    await assessorService.update(id, data); 
     await fetchAssessors();
   };
-
   const deleteAssessor = async (id: number) => {
-    await assessorService.delete(id); // ✅ id يبقى number
+    await assessorService.delete(id); 
     setAssessors((prev) => prev.filter((a) => a.id !== id));
   };
-
   useEffect(() => {
     fetchAssessors();
   }, []);

@@ -7,6 +7,7 @@ import styles from "./assessors.module.css";
 import AssessorCard from "@/components/Assessors/assessorscard";
 import { useAssessors } from "@/context/AssessorContext";
 import { User } from "@/types/user";
+import { ClassNames } from "@emotion/react";
 
 export default function AssessorsPage() {
   const { assessors, deleteAssessor } = useAssessors();
@@ -42,7 +43,8 @@ export default function AssessorsPage() {
           onChange={(e) => setSearchTerm(e.target.value)}
         />
         <Link href="/admin/assessors/new">
-          <Button variant="contained" startIcon={<AddIcon />}>
+          <Button variant="contained" startIcon={<AddIcon />}
+            className={styles.addButton}>
             إضافة مقيم جديد
           </Button>
         </Link>

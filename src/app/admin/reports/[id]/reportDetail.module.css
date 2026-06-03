@@ -1,0 +1,186 @@
+.container {
+  padding: 20px;
+  background-color: #f8f9fa;
+  min-height: 100vh;
+}
+
+.loading {
+    padding: 50px;
+    text-align: center;
+    font-size: 1.2rem;
+    color: #666;
+}
+
+.backButton {
+    background: none;
+    border: none;
+    color: #2c3e50;
+    cursor: pointer;
+    font-size: 1rem;
+    margin-bottom: 20px;
+    text-decoration: underline;
+}
+
+.header {
+    background: white;
+    padding: 20px;
+    border-radius: 8px;
+    margin-bottom: 30px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+    text-align: center;
+}
+
+.matchInfo {
+    display: flex;
+    gap: 20px;
+    justify-content: center;
+    margin-top: 10px;
+    color: #555;
+}
+
+.tablesContainer {
+    display: flex;
+    flex-direction: column;
+    gap: 40px;
+}
+
+.teamSection {
+    background: white;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+}
+
+.teamName {
+    margin-bottom: 15px;
+    color: #2c3e50;
+    border-bottom: 2px solid #eee;
+    padding-bottom: 10px;
+}
+
+.statsTable {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.statsTable th, .statsTable td {
+    padding: 12px;
+    text-align: center;
+    border-bottom: 1px solid #eee;
+}
+
+.statsTable th {
+    background-color: #f8f9fa;
+    font-weight: 600;
+    color: #444;
+}
+
+.statCell {
+    font-family: monospace;
+    font-size: 1.1em;
+}
+
+.yellowCard {
+    background-color: #fff3cd;
+    color: #856404;
+    font-weight: bold;
+}
+
+.redCard {
+    background-color: #f8d7da;
+    color: #721c24;
+    font-weight: bold;
+}
+.container {
+  padding: 20px;
+  background-color: #f8f9fa;
+  min-height: 100vh;
+}
+
+.loading {
+    padding: 50px;
+    text-align: center;
+    font-size: 1.2rem;
+    color: #666;
+}
+
+.backButton {
+    background: none;
+    border: none;
+    color: #2c3e50;
+    cursor: pointer;
+    font-size: 1rem;
+    margin-bottom: 20px;
+    text-decoration: underline;
+}
+
+.header {
+    background: white;
+    padding: 20px;
+    border-radius: 8px;
+    margin-bottom: 30px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+    text-align: center;
+}
+
+.matchInfo {
+    display: flex;
+    gap: 20px;
+    justify-content: center;
+    margin-top: 10px;
+    color: #555;
+}
+
+.tablesContainer {
+    display: flex;
+    flex-direction: column;
+    gap: 40px;
+}
+
+.teamSection {
+    background: white;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+}
+
+.teamName {
+    margin-bottom: 15px;
+    color: #2c3e50;
+    border-bottom: 2px solid #eee;
+    padding-bottom: 10px;
+}
+
+.statsTable {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.statsTable th, .statsTable td {
+    padding: 12px;
+    text-align: center;
+    border-bottom: 1px solid #eee;
+}
+
+.statsTable th {
+    background-color: #f8f9fa;
+    font-weight: 600;
+    color: #444;
+}
+
+.statCell {
+    font-family: monospace;
+    font-size: 1.1em;
+}
+
+.yellowCard {
+    background-color: #fff3cd;
+    color: #856404;
+    font-weight: bold;
+}
+
+.redCard {
+    background-color: #f8d7da;
+    color: #721c24;
+    font-weight: bold;
+}

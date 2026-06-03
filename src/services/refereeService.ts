@@ -2,36 +2,50 @@ import api from "@/lib/axios";
 import { RefereeWithUser, CreateRefereePayload, ApiEnvelope } from "@/types/referee";
 export const refereeService = {
   async getAll(): Promise<RefereeWithUser[]> {
-    const res = await api.get<ApiEnvelope<RefereeWithUser[]>>(
-      "/api/user/getAllReferees"
-    );
-    return res.data.data;
+    try {
+      const res = await api.get<ApiEnvelope<RefereeWithUser[]>>(
+        "/api/user/getAllReferees"
+      );
+      return res.data.data;
+    } catch (error) {
+      console.warn("Failed to fetch referees (possibly 403 Forbidden):", error);
+      return [];
+    }
   },
   async getById(id: string): Promise<RefereeWithUser> {
-    const res = await api.get<ApiEnvelope<RefereeWithUser>>(
-      `/api/user/getUser/${id}`
-    );
-    return res.data.data;
+    try {
+      const res = await api.get<ApiEnvelope<RefereeWithUser>>(
+        `/api/user/getUser/${id}`
+      );
+      return res.data.data;
+    } catch (error) {
+      console.warn(`Failed to fetch referee ${id} (possibly 403 Forbidden):`, error);
+      throw error; // Or return a mock/empty object if preferred
+    }
   },
   async create(data: CreateRefereePayload): Promise<RefereeWithUser> {
-    const payload: CreateRefereePayload = {
-      ...data,
-      phoneNumber: (data.phoneNumber || "").replace(/\D/g, ""),
-      RoleId: Number(data.RoleId ?? 3),
-      birthDate:
-        typeof data.birthDate === "string"
-          ? data.birthDate
-          : new Date(data.birthDate).toISOString().split("T")[0],
-      specification: (data.specification || "").trim(),
-      AFCNumber: (data.AFCNumber || "").replace(/\D/g, ""),
-      status: Boolean(data.status),
-      photo: data.photo || "",
-    };
+    const formData = new FormData();
+    formData.append('userName', data.userName);
+    formData.append('email', data.email);
+    formData.append('password', data.password);
+    formData.append('phoneNumber', (data.phoneNumber || '').replace(/\D/g, ''));
+    formData.append('RoleId', String(Number(data.RoleId ?? 3)));
+    formData.append(
+      'birthDate',
+      typeof data.birthDate === 'string'
+        ? data.birthDate
+        : new Date(data.birthDate).toISOString().split('T')[0]
+    );
+    formData.append('address', data.address);
+    formData.append('degree', (data.degree || '').trim());
+    formData.append('specification', (data.specification || '').trim());
+    formData.append('AFCNumber', (data.AFCNumber || '').replace(/\D/g, ''));
+    formData.append('status', String(Boolean(data.status)));
+    formData.append('photo', data.photo || '');
 
     const res = await api.post<ApiEnvelope<RefereeWithUser>>(
-      "/api/user/createUser",
-      payload,
-      { headers: { "Content-Type": "application/json" } }
+      '/api/user/createUser',
+      formData
     );
     return res.data.data ?? (res.data as any).user;
   },
@@ -47,6 +61,7 @@ export const refereeService = {
         ? data.birthDate
         : new Date(data.birthDate).toISOString().split("T")[0]
     );
+    formData.append("degree", (data.degree || "").trim());
     formData.append("specification", (data.specification || "").trim());
     formData.append("AFCNumber", (data.AFCNumber || "").replace(/\D/g, ""));
     formData.append("status", String(Boolean(data.status)));
@@ -58,8 +73,7 @@ export const refereeService = {
 
     const res = await api.patch<ApiEnvelope<RefereeWithUser>>(
       `/api/user/editUser/${id}`,
-      formData,
-      { headers: { "Content-Type": "multipart/form-data" } }
+      formData
     );
 
     return res.data.data ?? (res.data as any).user ?? (res.data as any).referee;

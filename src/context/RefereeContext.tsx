@@ -23,7 +23,11 @@ export const RefereeProvider: React.FC<{ children: React.ReactNode }> = ({ child
     try {
       const data: RefereeWithUser[] = await refereeService.getAll();
       setReferees(data);
-      return data; // ✅ حتى نستطيع استخدامه مباشرة في الصفحات
+      return data;
+    } catch (error) {
+      console.warn("Error fetching referees in context:", error);
+      setReferees([]);
+      return [];
     } finally {
       setLoading(false);
     }

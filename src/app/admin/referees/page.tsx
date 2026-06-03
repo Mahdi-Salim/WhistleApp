@@ -7,6 +7,37 @@ import Button from "@mui/material/Button";
 import RefereeCard from "@/components/Referees/RefereeCard";
 import { refereeService } from "@/services/refereeService";
 import { RefereeWithUser } from "@/types/referee";
+import { t } from "i18next";
+const REFEREE_PATCH_CACHE_KEY = "referee_local_patch";
+
+const applyLocalPatch = (items: RefereeWithUser[]): RefereeWithUser[] => {
+  if (typeof window === "undefined") return items;
+
+  const raw = localStorage.getItem(REFEREE_PATCH_CACHE_KEY);
+  if (!raw) return items;
+
+  try {
+    const patch = JSON.parse(raw) as Partial<RefereeWithUser> & { id: number };
+    const patched = items.map((item) =>
+      item.id === patch.id
+        ? {
+            ...item,
+            ...patch,
+            Referee: {
+              ...item.Referee,
+              ...patch.Referee,
+            },
+          }
+        : item
+    );
+    localStorage.removeItem(REFEREE_PATCH_CACHE_KEY);
+    return patched;
+  } catch (error) {
+    console.error("Failed to parse local referee patch", error);
+    localStorage.removeItem(REFEREE_PATCH_CACHE_KEY);
+    return items;
+  }
+};
 
 export default function RefereesPage() {
   const [referees, setReferees] = useState<RefereeWithUser[]>([]);
@@ -19,7 +50,7 @@ export default function RefereesPage() {
       try {
         setLoading(true);
         const data = await refereeService.getAll();
-        setReferees(data);
+        setReferees(applyLocalPatch(data));
       } catch (err) {
         console.error(err);
         setError("فشل في تحميل بيانات الحكام. يرجى التأكد من تشغيل الخادم.");
@@ -78,7 +109,8 @@ export default function RefereesPage() {
 
         <div className={styles.addRefereeContainer}>
           <Link href="/admin/referees/new">
-            <Button variant="contained" startIcon={<AddIcon />}>
+            <Button variant="contained" startIcon={<AddIcon />}
+            className={styles.addbutton}>
               إضافة حكم جديد
             </Button>
           </Link>

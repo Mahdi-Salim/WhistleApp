@@ -14,16 +14,16 @@ interface KpiCardProps {
 function KpiCard({ title, value, icon: Icon, change, changeType }: KpiCardProps) {
   return (
     <div className={styles.kpiCard}>
-      <div className={styles.cardHeader}>
+      <div className={styles.iconWrapper}>
         <Icon className={styles.cardIcon} />
-        <h3 className={styles.cardTitle}>{title}</h3>
       </div>
-      <p className={styles.cardValue}>{value}</p>
-      {change && (
-        <div className={`${styles.cardChange} ${styles[changeType || 'neutral']}`}>
-          <span>{change}</span>
-        </div>
-      )}
+      <div className={styles.cardContent}>
+        <h3 className={styles.cardTitle}>{title}</h3>
+        <p className={styles.cardValue}>{value}</p>
+        {change && (
+          <div className={`${styles.cardChange} ${styles[changeType || 'neutral']}`}>{change}</div>
+        )}
+      </div>
     </div>
   );
 }

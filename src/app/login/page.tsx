@@ -1,19 +1,17 @@
 "use client";
-
 import React, { useState } from "react";
 import styles from "./login.module.css";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
-
+import api from "@/lib/axios";
+import axios from "axios";
 
 export default function LoginPage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
-
   const router = useRouter();
-
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError(null);
@@ -26,27 +24,55 @@ export default function LoginPage() {
     try {
       setLoading(true);
 
-      const response = await fetch("/api/login", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email, password }),
-      });
+      const response = await api.post("/api/auth/login", { email, password });
 
-      const data = await response.json();
+      const data = response.data;
+      // Backend returns: { message: "...", data: { name: "...", token: "..." } }
+      const token = data.data?.token;
+      const name = data.data?.name;
 
-      if (!response.ok) {
-        setError(data.message || "فشل تسجيل الدخول. يرجى المحاولة مرة أخرى.");
-        setLoading(false);
-        return;
+      if (!token) {
+        throw new Error("Login failed: No token received");
       }
 
-      // Save token (temporary solution)
-      localStorage.setItem("authToken", data.token);
+      // Save token
+      localStorage.setItem("authToken", token);
 
-      router.push("/admin");
+      // Decode token to get RoleId (backend doesn't return it explicitly in body)
+      let roleId = 0;
+      let userId = 0;
+      try {
+        const base64Url = token.split(".")[1];
+        const base64 = base64Url.replace(/-/g, "+").replace(/_/g, "/");
+        const jsonPayload = window.atob(base64);
+        const decoded = JSON.parse(jsonPayload) as { RoleId?: number | string; id?: number | string };
+        roleId = Number(decoded.RoleId ?? 0);
+        userId = Number(decoded.id ?? 0);
+      } catch (e) {
+        console.error("Failed to parse token", e);
+      }
 
-    } catch (err) {
-      setError("حدث خطأ أثناء الاتصال بالخادم. يرجى المحاولة مجددًا.");
+      // Store user info
+      localStorage.setItem(
+        "authUser",
+        JSON.stringify({ id: userId, userName: name, RoleId: roleId })
+      );
+
+      if (roleId === 3) {
+        router.push("/referee");
+      } 
+      if (roleId === 2){
+        router.push("/assessor")
+      }
+      if (roleId === 1) {
+        router.push("/admin");
+      }
+    } catch (err: unknown) {
+      if (axios.isAxiosError(err)) {
+        setError(err.response?.data?.message || "فشل تسجيل الدخول. يرجى المحاولة مرة أخرى.");
+      } else {
+        setError("حدث خطأ أثناء الاتصال بالخادم. يرجى المحاولة مجددًا.");
+      }
     } finally {
       setLoading(false);
     }
@@ -54,8 +80,17 @@ export default function LoginPage() {
 
   return (
     <div className={styles.loginContainer}>
+
       <div className={styles.loginBox}>
-        <h1 className={styles.loginTitle}>تسجيل الدخول إلى لوحة إدارة WhistleApp</h1> {/* Updated title */}
+         <img 
+      src="/SFA Logo.webp"
+      alt="SFA Logo"
+      style={{
+        width: "90px",
+        marginBottom: '10px'
+      }}
+      />
+        <h1 className={styles.loginTitle}>WhistleApp</h1> {/* Updated title */}
 
         {error && <p className={styles.errorMessage}>{error}</p>}
 
@@ -93,10 +128,6 @@ export default function LoginPage() {
             {loading ? "جاري تسجيل الدخول..." : "تسجيل الدخول"}
           </button>
         </form>
-        {/* Added link to signup page */}
-        <Link href="/signup" className={styles.signupLink}>
-          ليس لديك حساب؟ إنشاء حساب جديد
-        </Link>
       </div>
     </div>
   );

@@ -10,7 +10,7 @@ export interface Player {
 }
 
 export interface Team {
-  id?: number;             // id تلقائي من Sequelize
+  id?: number;             
   TeamName: string;
   TeamManager: string;
   Coach: string;

@@ -8,9 +8,8 @@ import CancelIcon from "@mui/icons-material/Close";
 import { useWAT } from "@/context/WATContext";
 import type { WAT } from "@/types/WAT";
 import { courtService } from "@/services/CourtService";
-import { refereeService } from "@/services/refereeService"; // ✅ لجلب الحكام
-import Select from "react-select";
-import type { RefereeWithUser } from "@/types/referee"; // ✅ استخدام النوع من ملف referee.ts
+import { refereeService } from "@/services/refereeService";
+import type { RefereeWithUser } from "@/types/referee";
 
 const typeOptions = [
   { value: "false", label: "تمرين" },
@@ -37,14 +36,12 @@ export default function AddNewWATPage() {
 
   const [courts, setCourts] = useState<{ id: number; courtName: string }[]>([]);
   const [referees, setReferees] = useState<RefereeWithUser[]>([]);
-  const [selectedReferees, setSelectedReferees] = useState<number[]>([]);
 
   useEffect(() => {
     courtService.getAll().then(setCourts).catch(() => setCourts([]));
 
     refereeService.getAll()
       .then((users: RefereeWithUser[]) => {
-        // ✅ فلترة الحكام فقط (RoleId = 3)
         const refs = users.filter((u) => u.RoleId === 3);
         setReferees(refs);
       })
@@ -68,18 +65,27 @@ export default function AddNewWATPage() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    setError(null);
+
+    if (referees.length === 0) {
+      setError("لا يوجد حكام متاحون لإسناد هذا الحدث.");
+      return;
+    }
+
     setLoading(true);
     try {
-      for (const refereeId of selectedReferees) {
-        await createEvent({
-          ...event,
-          UserId: refereeId, // ← لكل حكم
-        });
-      }
+      await Promise.all(
+        referees.map((ref) =>
+          createEvent({
+            ...event,
+            UserId: ref.id,
+          })
+        )
+      );
       router.push("/admin/events");
     } catch (err) {
       console.error(err);
-      setError("فشل في إنشاء الحدث. يرجى المحاولة مرة أخرى.");
+      setError("فشل في إنشاء الحدث لكل الحكام. يرجى المحاولة مرة أخرى.");
     } finally {
       setLoading(false);
     }
@@ -167,23 +173,6 @@ export default function AddNewWATPage() {
               </option>
             ))}
           </select>
-        </div>
-
-        {/* الحكام (متعدد) */}
-        <div className={styles.formGroup}>
-          <label htmlFor="Referees" className={styles.formLabel}>
-            الحكام:
-          </label>
-          <Select
-            isMulti
-            options={referees.map((r) => ({ value: r.id, label: r.userName }))}
-            value={selectedReferees.map((id) => ({
-              value: id,
-              label: referees.find((r) => r.id === id)?.userName ?? "",
-            }))}
-            onChange={(options) => setSelectedReferees(options.map((o) => o.value))}
-            placeholder="اختر الحكام..."
-          />
         </div>
 
         <div className={styles.buttonGroup}>

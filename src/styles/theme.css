@@ -1,0 +1,65 @@
+:root {
+  --primary: #1b5e20;
+  --primary-hover: #2e7d32;
+  --primary-light: #4caf50;
+  --primary-soft: rgba(76, 175, 80, 0.12);
+  --primary-border: rgba(27, 94, 32, 0.15);
+  --hover-surface: rgba(27, 94, 32, 0.05);
+  --topbar-height: 60px;
+  --sidebar-width: 260px;
+  --transition-fast: 0.2s ease;
+  --transition-normal: 0.3s ease;
+  /* ========== Status Colors ========== */
+  --success: #22c55e;
+  --warning: #f59e0b;
+  --danger: #ef4444;
+  --info: #3b82f6;
+
+  /* ========== Backgrounds ========== */
+  --bg-main: #eef5ef;
+  --bg-surface: rgba(255, 255, 255, 0.85);
+  --bg-card: rgba (25, 255, 255, 0.92);
+
+  /* ========== Text ========== */
+  --text-main: #1f2933;
+  --text-muted: #64748b;
+
+  /* ========== Borders & Effects ========== */
+  --border-subtle: rgba(27, 94, 32, 0.15);
+  --shadow-sm: 0 2px 6px rgba(0, 0, 0, 0.06);
+  --shadow-md: 0 8px 24px rgba(0, 0, 0, 0.08);
+
+  /* ========== UI Radius ========== */
+  --radius-sm: 8px;
+  --radius-md: 12px;
+  --radius-lg: 16px;
+
+  /* ========== Sidebar / Topbar ========== */
+  --layout-dark: #0f172a;
+  --layout-dark-2: #1e293b;
+}
+
+[data-theme="dark"] {
+  --primary: #4caf50;
+  --primary-hover: #66bb6a;
+  --primary-light: #81c784;
+  --primary-soft: rgba(76, 175, 80, 0.15);
+  --primary-border: rgba(76, 175, 80, 0.2);
+  --hover-surface: rgba(255, 255, 255, 0.04);
+  --success: #22c55e;
+  --warning: #fbbf24;
+  --danger: #ef5350;
+  --info: #60a5fa;
+
+  --bg-main: #0b1220;
+  --bg-surface: #111827;
+  --bg-card: #1e293b;
+
+  --text-main: #e5e7eb;
+  --text-muted: #9ca3af;
+
+  --border-subtle: rgba(255, 255, 255, 0.08);
+
+  --shadow-sm: 0 2px 6px rgba(0, 0, 0, 0.4);
+  --shadow-md: 0 8px 24px rgba(0, 0, 0, 0.5);
+}

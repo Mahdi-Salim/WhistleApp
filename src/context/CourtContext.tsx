@@ -10,14 +10,12 @@ type CourtContextType = {
   refreshCourts: () => Promise<void>;
   createCourt: (input: Omit<Court, "id" | "createdAt" | "updatedAt">) => Promise<void>;
 };
-
 const CourtContext = createContext<CourtContextType | undefined>(undefined);
 
 export const CourtProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [courts, setCourts] = useState<Court[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-
   const refreshCourts = async () => {
     setLoading(true);
     try {
@@ -31,7 +29,6 @@ export const CourtProvider: React.FC<{ children: React.ReactNode }> = ({ childre
       setLoading(false);
     }
   };
-
   const createCourt = async (input: Omit<Court, "id" | "createdAt" | "updatedAt">) => {
     setLoading(true);
     try {

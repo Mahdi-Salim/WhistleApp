@@ -6,14 +6,20 @@ import styles from "./signup.module.css";
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import Button from '@mui/material/Button';
-import PersonAddIcon from '@mui/icons-material/PersonAdd'; // Icon for signup
+import PersonAddIcon from '@mui/icons-material/PersonAdd';
+import api from "@/lib/axios";
+import axios from "axios";
 
 export default function SignupPage() {
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
+  const [phoneNumber, setPhoneNumber] = useState('');
+  const [birthDate, setBirthDate] = useState('');
+  const [address, setAddress] = useState('');
   const [error, setError] = useState<string | null>(null);
+  const [loading, setLoading] = useState(false);
   const router = useRouter();
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -21,7 +27,7 @@ export default function SignupPage() {
     setError(null);
 
     // Basic client-side validation
-    if (!name || !email || !password || !confirmPassword) {
+    if (!name || !email || !password || !confirmPassword || !phoneNumber || !birthDate || !address) {
       setError("الرجاء تعبئة جميع الحقول.");
       return;
     }
@@ -38,27 +44,36 @@ export default function SignupPage() {
 
     // Simulate API call to register a new user
     try {
-      // Replace with your actual API endpoint for signup
-      const response = await fetch('/api/signup', { 
-        method: 'POST',
+      setLoading(true);
+      
+      // Using FormData because the backend route uses upload.single('photo')
+      // which often requires multipart/form-data
+      const formData = new FormData();
+      formData.append('userName', name);
+      formData.append('email', email);
+      formData.append('password', password);
+      formData.append('phoneNumber', phoneNumber);
+      formData.append('birthDate', birthDate);
+      formData.append('address', address);
+      formData.append('RoleId', '2'); // Default to Assessor/User role
+
+      await api.post('/api/user/createUser', formData, {
         headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ name, email, password }),
+            'Content-Type': 'multipart/form-data',
+        }
       });
 
-      if (response.ok) {
-        const data = await response.json();
-        console.log("Signup successful:", data);
-        alert("تم إنشاء حسابك بنجاح! الرجاء تسجيل الدخول.");
-        router.push('/login'); // Redirect to login page after successful signup
-      } else {
-        const errorData = await response.json();
-        setError(errorData.message || "فشل إنشاء الحساب. يرجى المحاولة مرة أخرى.");
-      }
-    } catch (apiError) {
+      alert("تم إنشاء حسابك بنجاح! الرجاء تسجيل الدخول.");
+      router.push('/login');
+    } catch (apiError: unknown) {
       console.error("Signup API error:", apiError);
-      setError("حدث خطأ أثناء الاتصال بالخادم. يرجى المحاولة مرة أخرى.");
+      if (axios.isAxiosError(apiError)) {
+        setError(apiError.response?.data?.message || "فشل إنشاء الحساب. يرجى المحاولة مرة أخرى.");
+      } else {
+        setError("حدث خطأ أثناء الاتصال بالخادم. يرجى المحاولة مرة أخرى.");
+      }
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -91,6 +106,39 @@ export default function SignupPage() {
             />
           </div>
           <div className={styles.formGroup}>
+            <label htmlFor="phoneNumber" className={styles.formLabel}>رقم الهاتف:</label>
+            <input
+              type="tel"
+              id="phoneNumber"
+              className={styles.formInput}
+              value={phoneNumber}
+              onChange={(e) => setPhoneNumber(e.target.value)}
+              required
+            />
+          </div>
+          <div className={styles.formGroup}>
+            <label htmlFor="birthDate" className={styles.formLabel}>تاريخ الميلاد:</label>
+            <input
+              type="date"
+              id="birthDate"
+              className={styles.formInput}
+              value={birthDate}
+              onChange={(e) => setBirthDate(e.target.value)}
+              required
+            />
+          </div>
+          <div className={styles.formGroup}>
+            <label htmlFor="address" className={styles.formLabel}>العنوان:</label>
+            <input
+              type="text"
+              id="address"
+              className={styles.formInput}
+              value={address}
+              onChange={(e) => setAddress(e.target.value)}
+              required
+            />
+          </div>
+          <div className={styles.formGroup}>
             <label htmlFor="password" className={styles.formLabel}>كلمة المرور:</label>
             <input
               type="password"
@@ -112,8 +160,8 @@ export default function SignupPage() {
               required
             />
           </div>
-          <Button type="submit" variant="contained" color="primary" startIcon={<PersonAddIcon />} className={styles.signupButton}>
-            إنشاء حساب
+          <Button type="submit" variant="contained" color="primary" startIcon={<PersonAddIcon />} className={styles.signupButton} disabled={loading}>
+            {loading ? "جاري إنشاء الحساب..." : "إنشاء حساب"}
           </Button>
         </form>
         <Link href="/login" className={styles.loginLink}>

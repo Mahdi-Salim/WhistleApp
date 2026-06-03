@@ -12,10 +12,11 @@ import FitnessCenterIcon from "@mui/icons-material/FitnessCenter";
 import StadiumIcon from '@mui/icons-material/Stadium';
 import styles from "@/components/Sidebar/Sidebar.module.css";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 
  function Sidebar() {
-  const pathname = usePathname();   
+  const pathname = usePathname();
+  const router = useRouter();   
   const menu = [
     { title: "Home", path: "/admin", icon: <DashboardIcon /> },
     { title: "Referees", path: "/admin/referees", icon: <PeopleIcon /> },
@@ -27,7 +28,9 @@ import { usePathname } from "next/navigation";
     { title: "WorkoutAndTests", path: "/admin/events", icon: <FitnessCenterIcon/>}
   ];
   const handleLogout = () => {
-    console.log("Logging out...");
+    localStorage.removeItem("authToken");
+    localStorage.removeItem("authUser");
+    router.push("/login");
   };
   return (
     <aside className={styles.sidebar}>

@@ -21,14 +21,14 @@ export default function CourtsPage() {
 
   return (
     <div className={styles.courtsPage}>
-      <h1 className={styles.courtsTitle}>🏟️ إدارة الملاعب</h1>
+      <h1 className={styles.courtsTitle}> إدارة الملاعب</h1>
 
       {/* شريط البحث + إضافة ملعب */}
       <div className={styles.topControls}>
         <div className={styles.searchContainer}>
           <input
             type="text"
-            placeholder="🔍 البحث عن ملعب..."
+            placeholder=" البحث عن ملعب..."
             className={styles.searchInput}
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
@@ -43,7 +43,6 @@ export default function CourtsPage() {
         </button>
       </div>
 
-      {/* الجدول */}
       {filteredCourts.length === 0 ? (
         <p className={styles.noCourtsFound}>لا توجد ملاعب مطابقة للبحث</p>
       ) : (
@@ -63,15 +62,6 @@ export default function CourtsPage() {
                 <td>{court.courtName}</td>
                 <td>{court.address || "—"}</td>
                 <td className={styles.buttonGroup}>
-                  <button
-                    className={styles.detailsButton}
-                    onClick={() =>
-                      router.push(`/admin/courts/edit/${court.id}`)
-                    }
-                  >
-                    تعديل
-                  </button>
-
                   <button
                     className={styles.deleteButton}
                     onClick={async () => {

@@ -1,113 +1,18 @@
-// whistleapp/src/app/admin/matches/page.tsx
 "use client";
-
-import React, { useState, useMemo } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import styles from "./matches.module.css";
 import Link from "next/link";
 import Button from '@mui/material/Button';
 import AddIcon from '@mui/icons-material/Add';
-// import MatchCard from "@/components/Matches/MatchCard"; // Will be created later
+import { matchService, Match } from '@/services/matchService';
+import { courtService } from '@/services/CourtService';
+import { Court } from '@/types/court';
 
-// Basic interfaces for Team and Referee (you might want to import these from a shared types file)
-interface BasicTeam {
-  id: number;
-  name: string;
-  logoUrl?: string;
-}
-
-interface BasicReferee {
-  id: number;
-  name: string;
-}
-
-// Define the Match interface
-interface Match {
-  id: number;
-  date: Date;
-  time: string; // e.g., "15:00"
-  location: string;
-  homeTeam: BasicTeam;
-  awayTeam: BasicTeam;
-  mainReferee: BasicReferee | null;
-  assistantReferee1: BasicReferee | null;
-  assistantReferee2: BasicReferee | null;
-  fourthOfficial: BasicReferee | null;
-  varReferee: BasicReferee | null; // Optional
-  status: 'scheduled' | 'played' | 'cancelled' | 'postponed';
-  score?: string; // Optional, e.g., "2-1"
-  notes?: string; // Optional
-}
-
-// Dummy data for teams (for dropdowns)
-const dummyTeams: BasicTeam[] = [
-  { id: 1, name: "Al-Hilal", logoUrl: "/images/team_hilal.png" },
-  { id: 2, name: "Al-Nassr", logoUrl: "/images/team_nassr.png" },
-  { id: 3, name: "Al-Ittihad", logoUrl: "/images/team_ittihad.png" },
-];
-
-// Dummy data for referees (for dropdowns)
-const dummyReferees: BasicReferee[] = [
-  { id: 101, name: "Ahmad Ali" },
-  { id: 102, name: "Sami Hassan" },
-  { id: 103, name: "Omar Khaled" },
-];
-
-
-// Dummy data for matches
-const initialMatches: Match[] = [
-  {
-    id: 1,
-    date: new Date('2025-12-25'),
-    time: "18:00",
-    location: "King Fahd Stadium",
-    homeTeam: dummyTeams[0], // Al-Hilal
-    awayTeam: dummyTeams[1], // Al-Nassr
-    mainReferee: dummyReferees[0],
-    assistantReferee1: dummyReferees[1],
-    assistantReferee2: dummyReferees[2],
-    fourthOfficial: null,
-    varReferee: null,
-    status: 'scheduled',
-    notes: "Important league match.",
-  },
-  {
-    id: 2,
-    date: new Date('2025-12-26'),
-    time: "20:30",
-    location: "Prince Abdullah Al-Faisal Stadium",
-    homeTeam: dummyTeams[2], // Al-Ittihad
-    awayTeam: dummyTeams[0], // Al-Hilal
-    mainReferee: dummyReferees[1],
-    assistantReferee1: dummyReferees[0],
-    assistantReferee2: null,
-    fourthOfficial: null,
-    varReferee: dummyReferees[2],
-    status: 'scheduled',
-    notes: "Cup quarter-final.",
-  },
-  {
-    id: 3,
-    date: new Date('2025-12-20'),
-    time: "17:00",
-    location: "Local Club Pitch",
-    homeTeam: dummyTeams[1], // Al-Nassr
-    awayTeam: dummyTeams[2], // Al-Ittihad
-    mainReferee: dummyReferees[2],
-    assistantReferee1: null,
-    assistantReferee2: null,
-    fourthOfficial: null,
-    varReferee: null,
-    status: 'played',
-    score: '3-1',
-  },
-];
-
-// Placeholder for MatchCard component - will be created separately
-const MatchCard: React.FC<{ match: Match, onDelete: (id: number) => void }> = ({ match, onDelete }) => {
+const MatchCard: React.FC<{ match: Match, courtName: string, onDelete: (id: number) => void }> = ({ match, courtName, onDelete }) => {
     const handleDelete = () => {
         if (!onDelete) return;
         const confirmDelete = window.confirm(
-          `هل أنت متأكد أنك تريد إلغاء المباراة بين "${match.homeTeam.name}" و "${match.awayTeam.name}"؟`
+          `هل أنت متأكد أنك تريد إلغاء المباراة؟`
         );
         if (confirmDelete) {
           onDelete(match.id);
@@ -117,34 +22,24 @@ const MatchCard: React.FC<{ match: Match, onDelete: (id: number) => void }> = ({
     return (
       <div className={styles.matchCard}>
         <div className={styles.matchHeader}>
-            <img src={match.homeTeam.logoUrl || "/images/placeholder.png"} alt={match.homeTeam.name} className={styles.teamLogo} />
-            <span className={styles.teamName}>{match.homeTeam.name}</span>
+            <span className={styles.teamName}>الفريق الأول</span>
             <span className={styles.vsText}>vs</span>
-            <span className={styles.teamName}>{match.awayTeam.name}</span>
-            <img src={match.awayTeam.logoUrl || "/images/placeholder.png"} alt={match.awayTeam.name} className={styles.teamLogo} />
+            <span className={styles.teamName}>الفريق الثاني</span>
         </div>
         <p className={styles.matchDetails}>
-            <span className={styles.detailLabel}>التاريخ:</span> {match.date.toLocaleDateString()}
+            <span className={styles.detailLabel}>التاريخ:</span> {new Date(match.Date).toLocaleDateString()}
         </p>
         <p className={styles.matchDetails}>
             <span className={styles.detailLabel}>الوقت:</span> {match.time}
         </p>
         <p className={styles.matchDetails}>
-            <span className={styles.detailLabel}>المكان:</span> {match.location}
+            <span className={styles.detailLabel}>المكان:</span> {courtName}
         </p>
-        <p className={styles.matchDetails}>
-            <span className={styles.detailLabel}>الحكم الرئيسي:</span> {match.mainReferee?.name || 'لم يعين'}
-        </p>
-        <p className={styles.matchDetails}>
-            <span className={styles.detailLabel}>الحالة:</span> {match.status === 'scheduled' ? 'مجدولة' : match.status === 'played' ? 'لعبت' : 'ملغاة'}
+         <p className={styles.matchDetails}>
+            <span className={styles.detailLabel}>النوع:</span> {match.MatchType ? 'رسمية' : 'ودية'}
         </p>
 
         <div className={styles.buttonRow}>
-            <Link href={`/admin/matches/edit/${match.id}`} passHref>
-                <Button variant="contained" className={styles.detailsButton}>
-                    عرض / تعديل
-                </Button>
-            </Link>
             <Button variant="contained" className={styles.deleteButton} onClick={handleDelete}>
                 إلغاء المباراة
             </Button>
@@ -152,15 +47,41 @@ const MatchCard: React.FC<{ match: Match, onDelete: (id: number) => void }> = ({
       </div>
     );
   };
-
-
 export default function MatchesPage() {
-  const [matches, setMatches] = useState<Match[]>(initialMatches);
+  const [matches, setMatches] = useState<Match[]>([]);
+  const [courts, setCourts] = useState<Court[]>([]);
+  const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState<string>('');
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const [matchesData, courtsData] = await Promise.all([
+          matchService.getAll(),
+          courtService.getAll()
+        ]);
+        setMatches(matchesData);
+        setCourts(courtsData);
+      } catch (error) {
+        console.error("Failed to fetch data", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchData();
+  }, []);
 
-  const handleDelete = (id: number) => {
-    // In a real app, you would send a delete/cancel request to your API
-    setMatches(matches.filter((match) => match.id !== id));
+  const handleDelete = async (id: number) => {
+    try {
+      await matchService.delete(id);
+      setMatches(matches.filter((match) => match.id !== id));
+    } catch (error) {
+      alert("فشل في حذف المباراة");
+    }
+  };
+
+  const getCourtName = (courtId: number) => {
+    const court = courts.find(c => c.id === courtId);
+    return court ? court.courtName : 'غير محدد';
   };
 
   const filteredMatches = useMemo(() => {
@@ -168,14 +89,14 @@ export default function MatchesPage() {
       return matches;
     }
     const lowerCaseSearchTerm = searchTerm.toLowerCase();
-    return matches.filter(match =>
-      match.homeTeam.name.toLowerCase().includes(lowerCaseSearchTerm) ||
-      match.awayTeam.name.toLowerCase().includes(lowerCaseSearchTerm) ||
-      match.location.toLowerCase().includes(lowerCaseSearchTerm) ||
-      (match.mainReferee?.name.toLowerCase().includes(lowerCaseSearchTerm)) || // Search by referee name
-      match.status.toLowerCase().includes(lowerCaseSearchTerm)
-    );
-  }, [matches, searchTerm]);
+    return matches.filter(match => {
+        const courtName = getCourtName(match.CourtId).toLowerCase();
+        return courtName.includes(lowerCaseSearchTerm) ||
+               match.Date.includes(lowerCaseSearchTerm);
+    });
+  }, [matches, searchTerm, courts]);
+
+  if (loading) return <div className={styles.matchesPage}><p>جاري التحميل...</p></div>;
 
   return (
     <div className={styles.matchesPage}>
@@ -185,7 +106,7 @@ export default function MatchesPage() {
         <div className={styles.searchContainer}>
           <input
             type="text"
-            placeholder="البحث عن مباراة (الفريق، المكان، الحكم، الحالة)..."
+            placeholder="البحث عن مباراة...."
             className={styles.searchInput}
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
@@ -193,8 +114,9 @@ export default function MatchesPage() {
         </div>
         <div className={styles.addMatchContainer}>
           <Link href="/admin/matches/new" passHref>
-            <Button variant="contained" color="primary" startIcon={<AddIcon />}>
-              إضافة مباراة جديدة
+            <Button variant="contained" color="primary" startIcon={<AddIcon />}
+            className={styles.createMatchButton}>
+              إنشاء مباراة جديدة
             </Button>
           </Link>
         </div>
@@ -203,7 +125,12 @@ export default function MatchesPage() {
       <div className={styles.matchesGrid}>
         {filteredMatches.length > 0 ? (
           filteredMatches.map((match) => (
-            <MatchCard key={match.id} match={match} onDelete={handleDelete} />
+            <MatchCard 
+                key={match.id} 
+                match={match} 
+                courtName={getCourtName(match.CourtId)}
+                onDelete={handleDelete} 
+            />
           ))
         ) : (
           <p className={styles.noMatchesFound}>لا توجد مباريات مطابقة لمعايير البحث.</p>

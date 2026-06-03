@@ -1,6 +1,6 @@
 "use client";
 import React, { createContext, useContext, useState, useEffect } from "react";
-import { watService } from "@/services/WATService";
+import { watService, CreateWATPayload } from "@/services/WATService";
 import type { WAT } from "@/types/WAT";
 
 type WATContextType = {
@@ -12,26 +12,27 @@ type WATContextType = {
   refreshAll: () => Promise<void>;
   refreshTests: () => Promise<void>;
   refreshWorkouts: () => Promise<void>;
-  createEvent: (input: Omit<WAT, "id" | "createdAt" | "updatedAt">) => Promise<void>;
-  updateEvent: (id: number, input: Partial<WAT>) => Promise<void>;
+  createEvent: (payload: CreateWATPayload) => Promise<void>;
+  updateEvent: (id: number, payload: Partial<CreateWATPayload>) => Promise<void>;
   deleteEvent: (id: number) => Promise<void>;
 };
 const WATContext = createContext<WATContextType | undefined>(undefined);
+
 export const WATProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [events, setEvents] = useState<WAT[]>([]);
   const [tests, setTests] = useState<WAT[]>([]);
   const [workouts, setWorkouts] = useState<WAT[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+
   const refreshAll = async () => {
     setLoading(true);
+    setError(null);
     try {
       const data = await watService.getAll();
-      console.log("Event.Date:", events.map(e => e.Date));
-      setEvents(Array.isArray(data) ? data : []); 
-      setError(null);
-    } catch {
-      setError("فشل في جلب الأحداث");
+      setEvents(data);
+    } catch (err: any) {
+      setError(err?.message || "فشل في جلب الأحداث");
       setEvents([]);
     } finally {
       setLoading(false);
@@ -40,12 +41,12 @@ export const WATProvider: React.FC<{ children: React.ReactNode }> = ({ children 
 
   const refreshTests = async () => {
     setLoading(true);
+    setError(null);
     try {
       const data = await watService.getAllTests();
-      setTests(Array.isArray(data) ? data : []);
-      setError(null);
-    } catch {
-      setError("فشل في جلب الاختبارات");
+      setTests(data);
+    } catch (err: any) {
+      setError(err?.message || "فشل في جلب الاختبارات");
       setTests([]);
     } finally {
       setLoading(false);
@@ -54,37 +55,41 @@ export const WATProvider: React.FC<{ children: React.ReactNode }> = ({ children 
 
   const refreshWorkouts = async () => {
     setLoading(true);
+    setError(null);
     try {
       const data = await watService.getAllWorkouts();
-      setWorkouts(Array.isArray(data) ? data : []);
-      setError(null);
-    } catch {
-      setError("فشل في جلب التمارين");
+      setWorkouts(data);
+    } catch (err: any) {
+      setError(err?.message || "فشل في جلب التمارين");
       setWorkouts([]);
     } finally {
       setLoading(false);
     }
   };
 
-  const createEvent = async (input: Omit<WAT, "id" | "createdAt" | "updatedAt">) => {
+  const createEvent = async (payload: CreateWATPayload) => {
     setLoading(true);
+    setError(null);
     try {
-      await watService.create(input);
+      await watService.create(payload);
       await refreshAll();
-    } catch {
-      setError("فشل في إنشاء الحدث");
+    } catch (err: any) {
+      setError(err?.message || "فشل في إنشاء الحدث");
+      throw err;
     } finally {
       setLoading(false);
     }
   };
 
-  const updateEvent = async (id: number, input: Partial<WAT>) => {
+  const updateEvent = async (id: number, payload: Partial<CreateWATPayload>) => {
     setLoading(true);
+    setError(null);
     try {
-      await watService.update(id, input);
+      await watService.update(id, payload);
       await refreshAll();
-    } catch {
-      setError("فشل في تعديل الحدث");
+    } catch (err: any) {
+      setError(err?.message || "فشل في تعديل الحدث");
+      throw err;
     } finally {
       setLoading(false);
     }
@@ -92,11 +97,13 @@ export const WATProvider: React.FC<{ children: React.ReactNode }> = ({ children 
 
   const deleteEvent = async (id: number) => {
     setLoading(true);
+    setError(null);
     try {
       await watService.delete(id);
       await refreshAll();
-    } catch {
-      setError("فشل في حذف الحدث");
+    } catch (err: any) {
+      setError(err?.message || "فشل في حذف الحدث");
+      throw err;
     } finally {
       setLoading(false);
     }
@@ -126,6 +133,7 @@ export const WATProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     </WATContext.Provider>
   );
 };
+
 export const useWAT = () => {
   const ctx = useContext(WATContext);
   if (!ctx) throw new Error("useWAT يجب أن يُستخدم داخل WATProvider");

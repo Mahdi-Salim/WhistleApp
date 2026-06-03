@@ -1,56 +1,126 @@
-/* whistleapp/src/components/Dashboard/KpiCard.module.css */
 .kpiCard {
-  background-color: #ffffff;
-  border-radius: 8px;
-  padding: 20px;
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  min-width: 220px;
-  flex: 1; /* Allow cards to grow and shrink */
+  position: relative;
+
+  background-color: var(--bg-card);
+
+
+  border-radius: var(--radius-md);
+
+  padding: 22px;
+
+  border: 1px solid var(--border-subtle);
+
+  box-shadow: var(--shadow-md);
+
+  overflow: hidden;
+
+  transition:
+    all 0.2s ease;
 }
 
-.cardHeader {
+.kpiCard:hover {
+  transform: translateY(-6px);
+  
+
+}
+
+.kpiCard::before {
+  content: "";
+
+  position: absolute;
+
+  top: 0;
+  left: 0;
+
+  width: 100%;
+  height: 5px;
+
+  background: linear-gradient(
+    90deg,
+    var(--primary),
+    var(--primary-hover),
+    var(--primary-light)
+  );
+}
+
+.iconWrapper {
+  width: 60px;
+  height: 60px;
+
+  border-radius: 14px;
+
+  background: var(--primary-soft);
+
   display: flex;
   align-items: center;
-  margin-bottom: 15px;
+  justify-content: center;
+
+  margin-bottom: 18px;
 }
 
 .cardIcon {
-  font-size: 36px !important;
-  color: #2c3e50; /* Primary color */
-  margin-right: 15px;
+  font-size: 32px !important;
+  color: var(--primary);
+}
+
+.cardContent {
+  display: flex;
+  flex-direction: column;
 }
 
 .cardTitle {
-  font-size: 16px;
-  color: #555;
-  margin: 0;
-  font-weight: 500;
+  font-size: 15px;
+
+  font-weight: 600;
+
+  color: var(--text-muted);
+
+  margin: 0 0 10px;
 }
 
 .cardValue {
-  font-size: 32px;
-  font-weight: bold;
-  color: #333;
-  margin: 0 0 10px 0;
+  font-size: 34px;
+
+  font-weight: 800;
+
+  color: var(--text-main);
+
+  margin: 0 0 12px;
 }
 
 .cardChange {
-  font-size: 14px;
-  display: flex;
-  align-items: center;
+  font-size: 13px;
+
+  font-weight: 600;
+
+  padding-top: 10px;
+
+  border-top: 1px solid rgba(15, 46, 28, 0.08);
 }
 
 .increase {
-  color: #28a745; /* Green for increase */
+  color: #2e7d32;
 }
 
 .decrease {
-  color: #dc3545; /* Red for decrease */
+  color: #c62828;
 }
 
 .neutral {
-  color: #6c757d; /* Gray for neutral */
+  color: #607d68;
+}
+
+@media (max-width: 768px) {
+  .kpiCard {
+    padding: 18px;
+  }
+
+  .cardValue {
+    font-size: 28px;
+  }
+
+  .iconWrapper {
+    width: 52px;
+    height: 52px;
+  }
 }

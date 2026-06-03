@@ -1,77 +1,147 @@
-/* src/components/TopBar/TopBar.module.css */
 .topBar {
   width: 100%;
-  height: 50px;
-  background-color: #34495e; /* Matching the sidebar hover/active background */
+  height: 56px;
+
   position: sticky;
   top: 0;
-  z-index: 999; /* Ensure top bar is always on top */
-  color: #ecf0f1; /* Matching sidebar text color */
-  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); /* Subtle shadow */
+  z-index: 999;
+
+  background: linear-gradient(
+    180deg,
+    #0f2e1c 0%,
+    #0b2417 50%,
+    #071a11 100%
+  );
+
+  color: #ecfdf5;
+
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.35);
 }
 
+/* wrapper */
 .topBarWrapper {
   height: 100%;
   padding: 0 20px;
+
   display: flex;
   align-items: center;
   justify-content: space-between;
 }
 
+/* left */
 .topLeft {
   display: flex;
   align-items: center;
 }
 
+/* logo */
 .logo {
-  font-weight: bold;
-  font-size: 24px;
-  color: #ecf0f1; /* Matching sidebar text color */
-  cursor: pointer;
+  font-weight: 700;
+  font-size: 20px;
+
+  color: #ecfdf5;
   text-decoration: none;
-  transition: color 0.2s ease-in-out;
+
+  letter-spacing: 0.4px;
+
+  transition: 0.2s ease;
 }
 
 .logo:hover {
-  color: #ffffff; /* Slightly brighter on hover */
+  color: #a7f3d0;
 }
 
+/* right */
 .topRight {
   display: flex;
   align-items: center;
+  gap: 14px;
 }
 
+/* theme button */
+.themeToggleButton {
+  padding: 6px 12px;
+
+  border-radius: 999px;
+
+  border: 1px solid rgba(255, 255, 255, 0.12);
+
+  background: rgba(255, 255, 255, 0.04);
+
+  color: #ecfdf5;
+
+  font-size: 12px;
+  font-weight: 500;
+
+  cursor: pointer;
+
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+
+  transition: all 0.2s ease;
+}
+
+.themeToggleButton:hover {
+  background: rgba(255, 255, 255, 0.08);
+  border-color: rgba(255, 255, 255, 0.2);
+  transform: translateY(-1px);
+}
+
+/* icons */
 .topBarIconContainer {
   position: relative;
   cursor: pointer;
-  margin-left: 20px;
-  transition: color 0.2s ease-in-out;
+
+  color: #a7f3d0;
+
+  transition: 0.2s ease;
 }
 
 .topBarIconContainer:hover {
-  color: #ffffff; /* White on hover */
+  color: #ffffff;
 }
 
+/* badge */
 .topIconBadge {
-  width: 15px;
-  height: 15px;
-  background-color: #e74c3c; /* Red badge for notifications */
+  width: 14px;
+  height: 14px;
+
+  background: #ef4444;
+
   border-radius: 50%;
+
   color: white;
+
   position: absolute;
-  top: -5px;
-  right: -5px;
+  top: -4px;
+  right: -4px;
+
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 10px;
+
+  font-size: 9px;
 }
 
+/* avatar */
 .topAvatar {
-  width: 30px;
-  height: 30px;
+  width: 32px;
+  height: 32px;
+
   border-radius: 50%;
   object-fit: cover;
+
   cursor: pointer;
-  margin-left: 20px;
+
+  border: 2px solid rgba(167, 243, 208, 0.35);
+
+  transition: 0.2s ease;
+}
+
+.topAvatar:hover {
+  border-color: #a7f3d0;
+  transform: scale(1.05);
 }

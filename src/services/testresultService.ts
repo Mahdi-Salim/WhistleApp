@@ -13,6 +13,7 @@ export const resultsService = {
   },
   getByTestId: async (watId: number): Promise<TestResult | null> => {
     const res = await fetch(`/api/getOneResultByTestId/${watId}`);
+    if (res.status === 404) return null;
     if (!res.ok) throw new Error("فشل في جلب نتيجة الاختبار");
     return res.json();
   },

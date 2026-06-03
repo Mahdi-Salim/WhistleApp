@@ -1,6 +1,6 @@
-import axios from "axios";
+import api from "@/lib/axios";
 
-const API_URL = "http://localhost:3000/api/degree";
+const API_URL = "/api/degree";
 
 export interface Degree {
   id: number;
@@ -8,11 +8,11 @@ export interface Degree {
 }
 export const degreeService = {
   async getAll(): Promise<Degree[]> {
-    const res = await axios.get(`${API_URL}/getAllDegrees`);
+    const res = await api.get(`${API_URL}/getAllDegrees`);
     return res.data.data ?? [];
   },
   async create(type: string): Promise<Degree> {
-    const res = await axios.post(`${API_URL}/createDegree`, { TypeOfDegree: type });
+    const res = await api.post(`${API_URL}/createDegree`, { TypeOfDegree: type });
     return res.data.data;
   },
 };

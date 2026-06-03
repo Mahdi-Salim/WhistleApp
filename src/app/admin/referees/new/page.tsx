@@ -6,13 +6,15 @@ import styles from './addReferee.module.css';
 import Button from '@mui/material/Button';
 import { useReferees } from '@/context/RefereeContext';
 import { CreateRefereePayload } from '@/types/referee';
+import { imageService } from "@/services/imageService";
+import { t } from 'i18next';
 
 export default function AddRefereePage() {
   const router = useRouter();
   const { addReferee, loading: contextLoading } = useReferees();
   const [loading, setLoading] = useState(false);
+  const [uploadingImage, setUploadingImage] = useState(false);
   const [error, setError] = useState<string | null>(null);
-
   const [formData, setFormData] = useState<CreateRefereePayload>({
     userName: '',
     email: '',
@@ -36,6 +38,21 @@ export default function AddRefereePage() {
       ...prev,
       [name]: name === 'status' ? value === 'true' : value,
     }));
+  };
+
+  const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    setUploadingImage(true);
+    try {
+      const imageUrl = await imageService.upload(file);
+      setFormData((prev) => ({ ...prev, photo: imageUrl }));
+    } catch (error) {
+      alert("فشل في رفع الصورة، يرجى المحاولة مرة أخرى.");
+    } finally {
+      setUploadingImage(false);
+    }
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -111,18 +128,17 @@ export default function AddRefereePage() {
       {error && <p className={styles.errorMessage}>{error}</p>}
 
       <form onSubmit={handleSubmit} className={styles.addRefereeForm}>
-        {/* صورة الحكم */}
         <div className={styles.formGroup}>
-          <label className={styles.formLabel}>رابط الصورة</label>
+          <label className={styles.formLabel}>صورة شخصية</label>
           <input
-            type="text"
-            name="photo"
-            value={formData.photo || ''}
-            onChange={handleChange}
+            type="file"
+            accept="image/*"
+            onChange={handleImageUpload}
             className={styles.formInput}
-            placeholder="أدخل رابط الصورة"
+            disabled={uploadingImage}
           />
-          {formData.photo && (
+          {uploadingImage && <p>جاري رفع الصورة...</p>}
+          {formData.photo && !uploadingImage && (
             <img
               src={formData.photo}
               alt="Preview"
@@ -144,8 +160,6 @@ export default function AddRefereePage() {
             className={styles.formInput}
           />
         </div>
-
-        {/* البريد الإلكتروني */}
         <div className={styles.formGroup}>
           <label className={styles.formLabel}>البريد الإلكتروني</label>
           <input
@@ -157,8 +171,6 @@ export default function AddRefereePage() {
             className={styles.formInput}
           />
         </div>
-
-        {/* كلمة السر */}
         <div className={styles.formGroup}>
           <label className={styles.formLabel}>كلمة السر</label>
           <input
@@ -170,8 +182,6 @@ export default function AddRefereePage() {
             className={styles.formInput}
           />
         </div>
-
-        {/* رقم الهاتف */}
         <div className={styles.formGroup}>
           <label className={styles.formLabel}>رقم الهاتف</label>
           <input
@@ -184,8 +194,6 @@ export default function AddRefereePage() {
             placeholder="أدخل رقم الهاتف (10-15 رقم)"
           />
         </div>
-
-        {/* تاريخ الميلاد */}
         <div className={styles.formGroup}>
           <label className={styles.formLabel}>تاريخ الميلاد</label>
           <input
@@ -197,8 +205,6 @@ export default function AddRefereePage() {
             className={styles.formInput}
           />
         </div>
-
-        {/* العنوان */}
         <div className={styles.formGroup}>
           <label className={styles.formLabel}>العنوان</label>
           <input
@@ -223,8 +229,6 @@ export default function AddRefereePage() {
             className={styles.formInput}
           />
         </div>
-
-        {/* التخصص */}
         <div className={styles.formGroup}>
           <label className={styles.formLabel}>التخصص</label>
           <input
@@ -237,8 +241,6 @@ export default function AddRefereePage() {
             placeholder="أدخل التخصص (أحرف وأرقام ومسافات)"
           />
         </div>
-
-        {/* رقم AFC */}
         <div className={styles.formGroup}>
           <label className={styles.formLabel}>رقم AFC</label>
           <input
@@ -251,8 +253,6 @@ export default function AddRefereePage() {
             placeholder="أدخل رقم AFC (أرقام فقط)"
           />
         </div>
-
-        {/* الحالة */}
         <div className={styles.formGroup}>
           <label className={styles.formLabel}>الحالة</label>
           <select
@@ -266,8 +266,6 @@ export default function AddRefereePage() {
             <option value="false">غير نشط</option>
           </select>
         </div>
-
-        {/* أزرار */}
         <div className={styles.buttonGroup}>
           <Button
             variant="outlined"

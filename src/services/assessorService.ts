@@ -1,7 +1,6 @@
 import api from "@/lib/axios";
 import { User } from "@/types/user";
 import axios from "axios";
-
 const transformAssessor = (data: unknown): User => {
   const d = data as Partial<User>;
   return {
@@ -13,24 +12,30 @@ const transformAssessor = (data: unknown): User => {
     birthDate: d.birthDate ?? "",
     address: d.address ?? "",
     photo: d.photo ?? "",
-    RoleId: d.RoleId ?? 2, // المقيم دائمًا RoleId = 2
+    RoleId: d.RoleId ?? 2, 
     createdAt: d.createdAt,
     updatedAt: d.updatedAt,
   };
 };
-
 export const assessorService = {
   async getAll(): Promise<User[]> {
-    const response = await api.get("/api/user/getAllRefereeAssessor");
-    return response.data.data.map((item: unknown) => transformAssessor(item));
+    try {
+      const response = await api.get("/api/user/getAllRefereeAssessor");
+      return response.data.data.map((item: unknown) => transformAssessor(item));
+    } catch (error) {
+      console.warn("Failed to fetch assessors (possibly 403 Forbidden):", error);
+      return [];
+    }
   },
-
   async getById(id: number): Promise<User> {
-    // ✅ المسار الصحيح حسب الراوت
-    const response = await api.get(`/api/user/getUser/${String(id)}`);
-    return transformAssessor(response.data.data);
+    try {
+      const response = await api.get(`/api/user/getUser/${String(id)}`);
+      return transformAssessor(response.data.data);
+    } catch (error) {
+      console.warn(`Failed to fetch assessor ${id} (possibly 403 Forbidden):`, error);
+      throw error;
+    }
   },
-
   async create(data: Partial<User>): Promise<User> {
     if (
       !data.userName ||
@@ -47,26 +52,24 @@ export const assessorService = {
     if (cleanPhoneNumber.length < 10 || cleanPhoneNumber.length > 15) {
       throw new Error("رقم الهاتف يجب أن يكون بين 10-15 رقم");
     }
-
-    const payload = {
-      userName: data.userName.substring(0, 16),
-      email: data.email.trim(),
-      password: data.password,
-      phoneNumber: cleanPhoneNumber,
-      RoleId: 2, // المقيم
-      birthDate: data.birthDate,
-      address: data.address,
-      photo: data.photo || "",
-    };
+    const formData = new FormData();
+    formData.append('userName', data.userName.substring(0, 16));
+    formData.append('email', data.email.trim());
+    formData.append('password', data.password);
+    formData.append('phoneNumber', cleanPhoneNumber);
+    formData.append('RoleId', '2');
+    formData.append('birthDate', data.birthDate);
+    formData.append('address', data.address);
+    formData.append('photo', data.photo || '');
 
     try {
-      const res = await api.post("/api/user/createUser", payload);
+      const res = await api.post('/api/user/createUser', formData);
       return transformAssessor(res.data.user);
     } catch (error: unknown) {
       if (axios.isAxiosError(error)) {
-        console.error("ERROR CREATING ASSESSOR");
-        console.error("Status:", error.response?.status);
-        console.error("Data:", error.response?.data);
+        console.error('ERROR CREATING ASSESSOR');
+        console.error('Status:', error.response?.status);
+        console.error('Data:', error.response?.data);
       }
       throw error;
     }
@@ -83,13 +86,12 @@ export const assessorService = {
       address: data.address,
       photo: data.photo,
     };
-    // ✅ المسار الصحيح حسب الراوت
+   
     const res = await api.patch(`/api/user/editUser/${String(id)}`, payload);
     return transformAssessor(res.data.data);
   },
 
   async delete(id: number): Promise<void> {
-    // ✅ المسار الصحيح حسب الراوت
     await api.delete(`/api/user/deleteUser/${String(id)}`);
   },
 };

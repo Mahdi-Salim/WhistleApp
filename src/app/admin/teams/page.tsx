@@ -1,5 +1,4 @@
 "use client";
-
 import React, { useMemo, useState } from "react";
 import Link from "next/link";
 import Button from "@mui/material/Button";
@@ -7,11 +6,9 @@ import AddIcon from "@mui/icons-material/Add";
 import styles from "./teams.module.css";
 import TeamCard from "@/components/Teams/TeamCard";
 import { useTeams } from "@/context/TeamContext";
-
 export default function TeamsPage() {
   const { teams, loading, deleteTeam } = useTeams();
   const [searchTerm, setSearchTerm] = useState("");
-
   const filteredTeams = useMemo(() => {
     if (!searchTerm) return teams;
     const term = searchTerm.toLowerCase();
@@ -36,20 +33,20 @@ export default function TeamsPage() {
           value={searchTerm}
           onChange={(e) => setSearchTerm(e.target.value)}
         />
-
         <div style={{ display: "flex", gap: "10px" }}>
           <Link href="/admin/teams/new">
-            <Button variant="contained" startIcon={<AddIcon />}>
+            <Button variant="contained" startIcon={<AddIcon />}
+            className={styles.addButton}>
               إضافة فريق جديد
             </Button>
           </Link>
-
-          <Link href="/admin/degrees/new">
-            <Button variant="outlined">إضافة درجة جديدة</Button>
+          <Link href="/admin/teams/degree">
+            <Button variant="outlined" className={styles.addButton}>
+              إضافة درجة جديدة
+            </Button>
           </Link>
         </div>
       </div>
-
       <div className={styles.teamsGrid}>
         {filteredTeams.length > 0 ? (
           filteredTeams.map((team) => (

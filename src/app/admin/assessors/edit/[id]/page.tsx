@@ -7,6 +7,7 @@ import SaveIcon from "@mui/icons-material/Save";
 import CancelIcon from "@mui/icons-material/Close";
 import { User } from "@/types/user";
 import { assessorService } from "@/services/assessorService";
+import { imageService } from "@/services/imageService";
 
 export default function EditAssessorPage() {
   const router = useRouter();
@@ -15,6 +16,7 @@ export default function EditAssessorPage() {
 
   const [assessor, setAssessor] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
+  const [uploadingImage, setUploadingImage] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
@@ -46,6 +48,21 @@ export default function EditAssessorPage() {
     setAssessor((prevAssessor) =>
       prevAssessor ? { ...prevAssessor, [name]: value } : null
     );
+  };
+
+  const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file || !assessor) return;
+
+    setUploadingImage(true);
+    try {
+      const imageUrl = await imageService.upload(file);
+      setAssessor({ ...assessor, photo: imageUrl });
+    } catch (error) {
+      alert("فشل في رفع الصورة، يرجى المحاولة مرة أخرى.");
+    } finally {
+      setUploadingImage(false);
+    }
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -106,17 +123,17 @@ export default function EditAssessorPage() {
             />
           )}
           <label htmlFor="photo" className={styles.formLabel}>
-            صورة شخصية (URL):
+            تغيير الصورة الشخصية:
           </label>
           <input
-            type="text"
+            type="file"
             id="photo"
-            name="photo"
+            accept="image/*"
             className={styles.formInput}
-            value={assessor.photo || ""}
-            onChange={handleInputChange}
-            placeholder="أدخل رابط الصورة الشخصية"
+            onChange={handleImageUpload}
+            disabled={uploadingImage}
           />
+          {uploadingImage && <p>جاري رفع الصورة...</p>}
         </div>
 
         {/* Basic Info */}

@@ -3,11 +3,13 @@ import React, { useState } from "react";
 import { useRouter } from "next/navigation";
 import styles from "./addAssessor.module.css";
 import { Button } from "@mui/material";
+import { imageService } from "@/services/imageService";
 import { assessorService } from "@/services/assessorService";
 
 export default function AddAssessorPage() {
   const router = useRouter();
   const [loading, setLoading] = useState(false);
+  const [uploadingImage, setUploadingImage] = useState(false); // Track image upload status
   const [formData, setFormData] = useState({
     userName: "",
     email: "",
@@ -26,6 +28,21 @@ export default function AddAssessorPage() {
       ...prev,
       [name]: value,
     }));
+  };
+
+  const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    setUploadingImage(true);
+    try {
+      const imageUrl = await imageService.upload(file);
+      setFormData((prev) => ({ ...prev, photo: imageUrl }));
+    } catch (error) {
+      alert("فشل في رفع الصورة، يرجى المحاولة مرة أخرى.");
+    } finally {
+      setUploadingImage(false);
+    }
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -55,16 +72,16 @@ export default function AddAssessorPage() {
       <h1 className={styles.addAssessorTitle}>إضافة مقيم جديد</h1>
       <form onSubmit={handleSubmit} className={styles.addAssessorForm}>
         <div className={styles.formGroup}>
-          <label className={styles.formLabel}>رابط الصورة</label>
+          <label className={styles.formLabel}>صورة شخصية</label>
           <input
-            type="text"
-            name="photo"
-            value={formData.photo}
-            onChange={handleChange}
+            type="file"
+            accept="image/*"
+            onChange={handleImageUpload}
             className={styles.formInput}
-            placeholder="أدخل رابط الصورة"
+            disabled={uploadingImage}
           />
-          {formData.photo && (
+          {uploadingImage && <p>جاري رفع الصورة...</p>}
+          {formData.photo && !uploadingImage && (
             <img
               src={formData.photo}
               alt="Preview"

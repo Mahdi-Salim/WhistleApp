@@ -1,14 +1,16 @@
-.eventsPage {
+ .eventsPage {
   flex: 1;
-  padding: 30px;
-  background-color: #f8f9fa;
+  padding: 28px;
   min-height: calc(100vh - 50px);
+
+  background: var(--bg-main);
 }
 
+/* العنوان */
 .eventsTitle {
   font-size: 28px;
   font-weight: 700;
-  color: #2c3e50;
+  color: var(--text-main);
   margin-bottom: 25px;
 }
 
@@ -20,7 +22,7 @@
 
 .contentContainer {
   display: flex;
-  gap: 30px;
+  gap: 28px;
   flex-direction: column;
 }
 
@@ -33,49 +35,100 @@
 
 .calendarContainer {
   flex: 1;
-  background: white;
   padding: 20px;
-  border-radius: 12px;
-  box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+  border-radius: 16px;
+
+  background: var(--bg-surface);
+
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+
+  border: 1px solid var(--border-subtle);
+
+  box-shadow: var(--shadow-md);
 }
 
+/* events list */
 .eventsListContainer {
   flex: 1;
-  background: white;
+
+  background: var(--bg-card);
+
   padding: 20px;
-  border-radius: 12px;
-  box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+
+  border-radius: 16px;
+
+  box-shadow: var(--shadow-md);
+
   min-height: 400px;
+
+  border: 1px solid var(--border-subtle);
 }
 
+/* selected date */
 .selectedDateTitle {
   font-size: 20px;
-  color: #34495e;
+
+  color: var(--text-main);
+
   margin-bottom: 15px;
+
   padding-bottom: 10px;
-  border-bottom: 1px solid #eee;
+
+  border-bottom: 1px solid var(--border-subtle);
 }
 
+/* =========================
+   EVENT CARDS
+========================= */
+
 .eventCard {
-  background-color: #fff;
-  border: 1px solid #e0e0e0;
-  border-radius: 8px;
+  background-color: var(--bg-card);
+
+  border-radius: 12px;
+
   padding: 15px;
-  margin-bottom: 15px;
-  border-right: 4px solid #3498db; 
-  transition: transform 0.2s;
+
+  margin-bottom: 14px;
+
+  border-left: 4px solid var(--primary);
+
+  transition: all 0.2s ease;
+
+  border-top: 1px solid var(--border-subtle);
+  border-right: 1px solid var(--border-subtle);
+  border-bottom: 1px solid var(--border-subtle);
 }
 
 .eventCard:hover {
-  transform: translateX(-5px);
-  box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+  transform: translateY(-3px);
+
+  box-shadow: var(--shadow-md);
 }
 
-.eventCard.training { border-right-color: #3498db; }
-.eventCard.fitness_test { border-right-color: #e74c3c; }
-.eventCard.promotion_test { border-right-color: #9b59b6; }
-.eventCard.international_nomination_test { border-right-color: #f1c40f; }
-.eventCard.asian_academy_test { border-right-color: #2ecc71; }
+/* event types */
+
+.eventCard.training {
+  border-left-color: var(--primary);
+}
+
+.eventCard.fitness_test {
+  border-left-color: var(--primary-hover);
+}
+
+.eventCard.promotion_test {
+  border-left-color: var(--primary-light);
+}
+
+.eventCard.international_nomination_test {
+  border-left-color: var(--success);
+}
+
+.eventCard.asian_academy_test {
+  border-left-color: var(--info);
+}
+
+/* header */
 
 .eventHeader {
   display: flex;
@@ -84,91 +137,245 @@
   margin-bottom: 8px;
 }
 
+/* type badge */
+
 .eventType {
   font-weight: 700;
-  font-size: 14px;
-  color: #555;
-  background-color: #f0f2f5;
+  font-size: 12px;
+
+  color: var(--primary);
+
+  background-color: rgba(27, 94, 32, 0.1);
+
   padding: 4px 8px;
-  border-radius: 4px;
+
+  border-radius: 999px;
 }
+
+/* time */
 
 .eventTime {
   font-weight: 600;
-  color: #2c3e50;
-  font-size: 15px;
+
+  color: var(--text-main);
+
+  font-size: 14px;
 }
+
+/* location */
 
 .eventLocation {
   font-size: 14px;
-  color: #7f8c8d;
+
+  color: var(--text-muted);
+
   margin-bottom: 5px;
+
   display: flex;
   align-items: center;
   gap: 5px;
 }
 
+/* description */
+
 .eventDescription {
   font-size: 14px;
-  color: #333;
+
+  color: var(--text-main);
+
   line-height: 1.5;
 }
 
+/* empty state */
+
 .noEvents {
   text-align: center;
-  color: #7f8c8d;
+
+  color: var(--text-muted);
+
   margin-top: 50px;
+
   font-size: 16px;
 }
 
+/* =========================
+   CALENDAR STYLING
+========================= */
 
 .calendarWrapper {
-  direction: ltr; 
+  direction: ltr;
   font-family: inherit;
 }
 
 .tileHasEvent {
-  background-color: #ebf5fb !important;
-  color: #2980b9 !important;
-  font-weight: bold;
-  border-radius: 8px;
+  background-color: rgba(27, 94, 32, 0.12) !important;
+
+  color: var(--primary) !important;
+
+  font-weight: 600;
+
+  border-radius: 10px;
+
   position: relative;
 }
 
 .tileHasEvent::after {
   content: '';
+
   position: absolute;
-  bottom: 5px;
+
+  bottom: 4px;
   left: 50%;
+
   transform: translateX(-50%);
-  width: 6px;
-  height: 6px;
-  background-color: #3498db;
+
+  width: 5px;
+  height: 5px;
+
+  background-color: var(--primary);
+
   border-radius: 50%;
 }
 
 .tileSelected {
-  background-color: #2c3e50 !important;
+  background-color: var(--primary) !important;
+
   color: white !important;
-  border-radius: 8px;
+
+  border-radius: 10px;
 }
+
 .workoutDay {
-  background-color: #d4edda !important; 
-  color: #155724 !important;           
+  background-color: rgba(76, 175, 80, 0.15) !important;
+
+  color: var(--primary) !important;
+
   border-radius: 50%;
 }
 
 .testDay {
-  background-color: #f8d7da !important; 
-  color: #721c24 !important;            
+  background-color: rgba(239, 68, 68, 0.12) !important;
+
+  color: var(--danger) !important;
+
   border-radius: 50%;
 }
+
+/* actions */
+
 .eventActions {
   margin-top: 10px;
+
   display: flex;
-  gap: 8px; 
+
+  gap: 8px;
 }
 
 .eventActions button {
   font-size: 0.85rem;
+}
+
+.actionLink {
+  text-decoration: none;
+}
+
+/* =========================
+   PRIMARY ACTION
+========================= */
+.primaryActionButton {
+  background: linear-gradient(
+    135deg,
+    var(--primary),
+    var(--primary-hover)
+  );
+
+  color: white;
+
+  border: none;
+
+  padding: 8px 14px;
+
+  border-radius: 10px;
+
+  font-size: 13px;
+  font-weight: 600;
+
+  cursor: pointer;
+
+  transition: all 0.2s ease;
+
+  box-shadow: 0 6px 14px rgba(27, 94, 32, 0.25);
+}
+
+.primaryActionButton:hover:not(:disabled) {
+  transform: translateY(-2px);
+
+  box-shadow: 0 10px 20px rgba(27, 94, 32, 0.3);
+}
+
+.primaryActionButton:disabled {
+  opacity: 0.4;
+
+  cursor: not-allowed;
+
+  box-shadow: none;
+}
+
+/* =========================
+   SECONDARY ACTION
+========================= */
+
+.secondaryActionButton {
+  background: rgba(27, 94, 32, 0.08);
+
+  color: var(--primary);
+
+  border: 1px solid var(--border-subtle);
+
+  padding: 10px 16px;
+
+  border-radius: 999px;
+
+  font-size: 14px;
+  font-weight: 600;
+
+  cursor: pointer;
+
+  transition: all 0.2s ease;
+}
+
+.secondaryActionButton:hover {
+  background: rgba(27, 94, 32, 0.15);
+
+  transform: translateY(-2px);
+}
+
+/* =========================
+   FullCalendar
+========================= */
+
+.fc {
+  font-family: inherit;
+}
+
+.fc-toolbar-title {
+  color: var(--text-main);
+
+  font-weight: 700;
+}
+
+.fc-button {
+  background: var(--primary) !important;
+
+  border: none !important;
+
+  border-radius: 8px !important;
+}
+
+.fc-button:hover {
+  background: var(--primary-hover) !important;
+}
+
+.fc-daygrid-day:hover {
+  background: rgba(27, 94, 32, 0.06);
 }

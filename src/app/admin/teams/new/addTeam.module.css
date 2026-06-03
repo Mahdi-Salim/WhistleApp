@@ -1,22 +1,23 @@
 .addTeamContainer {
   flex: 1;
-  padding: 30px;
-  background-color: #f8f9fa;
+  padding: 32px 36px;
+  background: radial-gradient(circle at top left, #f6f8ff 0, #edf1f7 40%, #e5e9f0 100%);
   min-height: calc(100vh - 50px);
-  max-width: 900px;
-  margin: 30px auto;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
-  border-radius: 10px;
+  max-width: 960px;
+  margin: 32px auto;
+  box-shadow: 0 18px 45px rgba(15, 23, 42, 0.18);
+  border-radius: 16px;
 }
 
 .addTeamTitle {
   font-size: 30px;
   font-weight: 700;
-  color: #2c3e50;
-  margin-bottom: 30px;
+  color: #1f2933;
+  margin-bottom: 26px;
   text-align: center;
-  border-bottom: 1px solid #eee;
-  padding-bottom: 15px;
+  border-bottom: 1px solid rgba(148, 163, 184, 0.45);
+  padding-bottom: 14px;
+  letter-spacing: 0.03em;
 }
 
 /* Messages */
@@ -112,7 +113,6 @@
   padding-bottom: 10px;
 }
 
-/* Buttons */
 .buttonGroup {
   display: flex;
   gap: 15px;

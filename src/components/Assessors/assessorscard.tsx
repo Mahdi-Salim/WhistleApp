@@ -27,12 +27,9 @@ const AssessorCard: React.FC<AssessorCardProps> = ({ assessor, onDelete }) => {
         className={styles.assessorImage}
       />
       <h3 className={styles.assessorName}>{assessor.userName}</h3>
-
-      {/* يمكن إضافة معلومات إضافية هنا إذا أحببت، مثل البريد أو الحالة */}
       {assessor.email && (
         <p className={styles.assessorSpecification}>{assessor.email}</p>
       )}
-
       <div className={styles.buttonRow}>
         <Link href={`/admin/assessors/edit/${assessor.id}`}>
           <Button className={styles.detailsButton} variant="contained">

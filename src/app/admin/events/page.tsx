@@ -1,7 +1,10 @@
 "use client";
 import React, { useState, useMemo } from "react";
+import FullCalendar from "@fullcalendar/react";
+import dayGridPlugin from "@fullcalendar/daygrid";
+import timeGridPlugin from "@fullcalendar/timegrid";
+import interactionPlugin from "@fullcalendar/interaction";
 import Calendar from "react-calendar";
-import "react-calendar/dist/Calendar.css";
 import styles from "./events.module.css";
 import Link from "next/link";
 import Button from "@mui/material/Button";
@@ -46,158 +49,217 @@ export default function EventsPage() {
     const selectedYMD = toLocalYMD(date);
     return events.filter((event) => getEventDateYMD(event.Date) === selectedYMD);
   }, [date, events]);
-  const mergedEvents: EventWithUsers[] = useMemo(() => {
-    const map = new Map<number, EventWithUsers>();
+  const groupedEvents = useMemo(() => {
+    type GroupedEvent = {
+      key: string;
+      Date: string;
+      Time: string;
+      TypeActivity: boolean;
+      CourtId: number;
+      Court?: WAT["Court"];
+      items: WAT[];
+      users: DisplayUser[];
+    };
+
+    const map = new Map<string, GroupedEvent>();
+
     for (const ev of selectedDateEvents) {
-      if (!map.has(ev.id)) {
-        const users: DisplayUser[] = [];
-        if (ev.User) {
-          if (Array.isArray(ev.User)) {
-            users.push(...(ev.User as DisplayUser[]));
-          } else {
-            users.push(ev.User as DisplayUser);
-          }
+      const ymd = getEventDateYMD(ev.Date);
+      const key = `${ymd}|${ev.Time}|${ev.CourtId}|${ev.TypeActivity ? 1 : 0}`;
+
+      const users: DisplayUser[] = [];
+      if (ev.User) {
+        if (Array.isArray(ev.User)) {
+          users.push(...(ev.User as DisplayUser[]));
+        } else {
+          users.push(ev.User as DisplayUser);
         }
-        map.set(ev.id, { ...ev, User: users });
-      } else {
-        const existing = map.get(ev.id)!;
-        const users: DisplayUser[] = Array.isArray(ev.User)
-          ? (ev.User as DisplayUser[])
-          : ev.User
-          ? [ev.User as DisplayUser]
-          : [];
-        const combined = [...existing.User, ...users];
-        const uniqueUsers = combined.filter(
-          (u, index, arr) => arr.findIndex((x) => x.id === u.id) === index
-        );
-        existing.User = uniqueUsers;
-        map.set(ev.id, existing);
       }
+
+      const existing = map.get(key);
+      if (!existing) {
+        map.set(key, {
+          key,
+          Date: ymd,
+          Time: ev.Time,
+          TypeActivity: ev.TypeActivity,
+          CourtId: ev.CourtId,
+          Court: ev.Court,
+          items: [ev],
+          users,
+        });
+        continue;
+      }
+
+      existing.items.push(ev);
+      const combined = [...existing.users, ...users];
+      existing.users = combined.filter(
+        (u, index, arr) => arr.findIndex((x) => x.id === u.id) === index
+      );
+      if (!existing.Court && ev.Court) existing.Court = ev.Court;
     }
+
     return Array.from(map.values());
   }, [selectedDateEvents]);
 
   const handleDateChange = (newDate: Value) => setDate(newDate);
   const thisDate = date instanceof Date ? date : new Date();
+ return (
+  <div className={styles.eventsPage}>
+    <h1 className={styles.eventsTitle}>جدول التمارين والاختبارات</h1>
 
-  return (
-    <div className={styles.eventsPage}>
-      <h1 className={styles.eventsTitle}>جدول التمارين والاختبارات</h1>
-      <div className={styles.topControls}>
-        <Link href={`/admin/events/new?date=${toLocalYMD(thisDate)}`} passHref>
-          <Button variant="contained" color="primary" startIcon={<AddIcon />}>
-            إضافة حدث جديد
-          </Button>
-        </Link>
+    <div className={styles.topControls}>
+      <Link
+        href={`/admin/events/new?date=${toLocalYMD(thisDate)}`}
+        className={styles.actionLink}
+      >
+        <button className={styles.secondaryActionButton}>
+          إضافة حدث جديد
+        </button>
+      </Link>
+    </div>
+
+    <div className={styles.contentContainer}>
+      {/* ================= CALENDAR ================= */}
+      <div className={styles.calendarContainer}>
+        <div className={styles.calendarWrapper}>
+          <FullCalendar
+            plugins={[dayGridPlugin, timeGridPlugin, interactionPlugin]}
+            initialView="dayGridMonth"
+            height="auto"
+            selectable={true}
+            dateClick={(info) => {
+              setDate(new Date(info.dateStr));
+            }}
+            events={events.map((event) => ({
+              title: event.TypeActivity ? "اختبار" : "تمرين",
+              date: event.Date,
+              backgroundColor: event.TypeActivity ? "#1b5e20" : "#2e7d32",
+              borderColor: "#0f2e1c",
+            }))}
+          />
+        </div>
       </div>
 
-      <div className={styles.contentContainer}>
-        <div className={styles.calendarContainer}>
-          <div className={styles.calendarWrapper}>
-            <Calendar
-              onChange={handleDateChange}
-              value={date}
-              locale="ar-SA"
-              tileClassName={getTileClassName}
-            />
-          </div>
-        </div>
-        <div className={styles.eventsListContainer}>
-          <h2 className={styles.selectedDateTitle}>
-            أحداث يوم:{" "}
-            {thisDate.toLocaleDateString("ar-EG", {
-              weekday: "long",
-              year: "numeric",
-              month: "long",
-              day: "numeric",
-            })}
-          </h2>
-          {loading ? (
-            <p>جاري التحميل...</p>
-          ) : error ? (
-            <p className={styles.errorMessage}>{error}</p>
-          ) : mergedEvents.length > 0 ? (
-            mergedEvents.map((event) => {
-              const eventDate = new Date(event.Date);
-              const now = new Date();
-              const hasPassed =
-                now > new Date(eventDate.getTime() + 24 * 60 * 60 * 1000);
-              const displayUsers: DisplayUser[] = event.User;
-              return (
-                <div key={event.id} className={styles.eventCard}>
-                  <div className={styles.eventHeader}>
-                    <span className={styles.eventType}>
-                      {getEventTypeLabel(event.TypeActivity)}
-                    </span>
-                    <div className={styles.eventTime}>
-                      <AccessTimeIcon
-                        fontSize="small"
-                        style={{ verticalAlign: "middle", marginLeft: "4px" }}
-                      />
-                      {event.Time}
-                    </div>
-                  </div>
-                  <div className={styles.eventLocation}>
-                    <LocationOnIcon fontSize="small" />
-                    {event.Court?.courtName}
-                  </div>
-                  <p className={styles.eventDescription}>
-                    المستخدمون المشاركون:{" "}
-                    {displayUsers.length > 0
-                      ? displayUsers.map((u) => u.username).join(", ")
-                      : "—"}
-                  </p>
-                  <div className={styles.eventActions}>
-                    <Button
-                      variant="outlined"
-                      color="error"
-                      onClick={() => console.log("حذف:", event.id)}
-                    >
-                      حذف
-                    </Button>
-                    <Button
-                      variant="outlined"
-                      color="primary"
-                      onClick={() => console.log("تعديل:", event.id)}
-                    >
-                      تعديل
-                    </Button>
-                    {event.TypeActivity === true && (
-                      <Link
-                        href={{
-                          pathname: "/admin/testresult",
-                          query: {
-                            watId: event.id,
-                            user: JSON.stringify(displayUsers),
-                          },
-                        }}
-                        passHref
-                      >
-                        <Button
-                          variant="contained"
-                          color="success"
-                          disabled={!hasPassed}
-                        >
-                          إضافة النتائج
-                        </Button>
-                      </Link>
-                    )}
+      {/* ================= EVENTS LIST ================= */}
+      <div className={styles.eventsListContainer}>
+        <h2 className={styles.selectedDateTitle}>
+          أحداث يوم:{" "}
+          {thisDate.toLocaleDateString("ar-EG", {
+            weekday: "long",
+            year: "numeric",
+            month: "long",
+            day: "numeric",
+          })}
+        </h2>
+
+        {loading ? (
+          <p>جاري التحميل...</p>
+        ) : error ? (
+          <p className={styles.errorMessage}>{error}</p>
+        ) : groupedEvents.length > 0 ? (
+          groupedEvents.map((group) => {
+            const eventDate = new Date(group.Date);
+
+            const now = new Date();
+            const hasPassed =
+              now > new Date(eventDate.getTime() + 24 * 60 * 60 * 1000);
+
+            return (
+              <div key={group.key} className={styles.eventCard}>
+                {/* HEADER */}
+                <div className={styles.eventHeader}>
+                  <span className={styles.eventType}>
+                    {getEventTypeLabel(group.TypeActivity)}
+                  </span>
+
+                  <div className={styles.eventTime}>
+                    <AccessTimeIcon fontSize="small" />
+                    {group.Time}
                   </div>
                 </div>
-              );
-            })
-          ) : (
-            <div className={styles.noEvents}>
-              <p>لا توجد أحداث مجدولة لهذا اليوم.</p>
-              <Link href={`/admin/events/new?date=${toLocalYMD(thisDate)}`}>
-                <Button variant="text" color="primary">
-                  إضافة حدث في هذا اليوم
-                </Button>
-              </Link>
-            </div>
-          )}
-        </div>
+
+                {/* LOCATION */}
+                <div className={styles.eventLocation}>
+                  <LocationOnIcon fontSize="small" />
+                  {group.Court?.courtName}
+                </div>
+
+                {/* USERS */}
+                <p className={styles.eventDescription}>
+                  المستخدمون المشاركون:{" "}
+                  {group.users.length > 0
+                    ? group.users.map((u) => u.username).join(", ")
+                    : "—"}
+                </p>
+
+                {/* ACTIONS */}
+                <div className={styles.eventActions}>
+                  <button
+                    className={styles.deleteButton}
+                    onClick={() => console.log("حذف:", group.key)}
+                  >
+                    حذف
+                  </button>
+
+                  <button
+                    className={styles.detailsButton}
+                    onClick={() => console.log("تعديل:", group.key)}
+                  >
+                    تعديل
+                  </button>
+
+                  {/* TEST RESULTS */}
+                  {group.TypeActivity === true && (
+                    <div className={styles.resultButtons}>
+                      {group.items.map((item) => {
+                        const username = Array.isArray(item.User)
+                          ? item.User[0]?.username
+                          : item.User?.username;
+
+                        return (
+                          <Link
+                            key={item.id}
+                            href={{
+                              pathname: "/admin/testresult",
+                              query: { watId: item.id },
+                            }}
+                            className={styles.actionLink}
+                           >
+                            <button
+                              className={styles.primaryActionButton}
+                              disabled={!hasPassed}
+                            >
+                              إضافة نتيجة{" "}
+                              {username
+                                ? `(${username})`
+                                : `(#${item.UserId})`}
+                            </button>
+                          </Link>
+                        );
+                      })}
+                    </div>
+                  )}
+                </div>
+              </div>
+            );
+          })
+        ) : (
+          <div className={styles.noEvents}>
+            <p>لا توجد أحداث مجدولة لهذا اليوم.</p>
+
+            <Link
+              href={`/admin/events/new?date=${toLocalYMD(thisDate)}`}
+              className={styles.actionLink}
+            >
+              <button className={styles.secondaryActionButton}>
+                إضافة حدث في هذا اليوم
+              </button>
+            </Link>
+          </div>
+        )}
       </div>
     </div>
-  );
+  </div>
+);
 }

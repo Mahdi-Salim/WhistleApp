@@ -7,6 +7,9 @@ import SaveIcon from '@mui/icons-material/Save';
 import CancelIcon from '@mui/icons-material/Close';
 import { useReferees } from "@/context/RefereeContext";
 import { RefereeWithUser } from "@/types/referee";
+import { imageService } from "@/services/imageService";
+
+const REFEREE_PATCH_CACHE_KEY = "referee_local_patch";
 
 export default function EditRefereePage() {
   const router = useRouter();
@@ -16,6 +19,7 @@ export default function EditRefereePage() {
 
   const [referee, setReferee] = useState<RefereeWithUser | null>(null);
   const [loading, setLoading] = useState(true);
+  const [uploadingImage, setUploadingImage] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
@@ -69,6 +73,21 @@ export default function EditRefereePage() {
     }
   };
 
+  const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file || !referee) return;
+
+    setUploadingImage(true);
+    try {
+      const imageUrl = await imageService.upload(file);
+      setReferee({ ...referee, photo: imageUrl });
+    } catch (error) {
+      alert("فشل في رفع الصورة، يرجى المحاولة مرة أخرى.");
+    } finally {
+      setUploadingImage(false);
+    }
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!referee) return;
@@ -102,6 +121,25 @@ export default function EditRefereePage() {
         status: referee.Referee?.status ?? true,
         RoleId: 3,
       });
+      // Keep a local patch so the referees list reflects edits immediately.
+      localStorage.setItem(
+        REFEREE_PATCH_CACHE_KEY,
+        JSON.stringify({
+          id: referee.id,
+          userName: referee.userName,
+          email: referee.email,
+          phoneNumber: referee.phoneNumber,
+          birthDate: referee.birthDate,
+          address: referee.address,
+          photo: referee.photo ?? "",
+          Referee: {
+            degree: referee.Referee?.degree ?? "",
+            specification: referee.Referee?.specification ?? "",
+            AFCNumber: referee.Referee?.AFCNumber ?? "",
+            status: referee.Referee?.status ?? true,
+          },
+        })
+      );
       alert("تم تحديث بيانات الحكم بنجاح!");
       router.push("/admin/referees");
     } catch (apiError) {
@@ -139,17 +177,17 @@ export default function EditRefereePage() {
             />
           )}
           <label htmlFor="photo" className={styles.formLabel}>
-            صورة شخصية (URL):
+            تغيير الصورة الشخصية:
           </label>
           <input
-            type="text"
+            type="file"
             id="photo"
-            name="photo"
+            accept="image/*"
             className={styles.formInput}
-            value={referee.photo || ""}
-            onChange={handleInputChange}
-            placeholder="أدخل رابط الصورة الشخصية"
+            onChange={handleImageUpload}
+            disabled={uploadingImage}
           />
+          {uploadingImage && <p>جاري رفع الصورة...</p>}
         </div>
 
         {/* معلومات أساسية */}
